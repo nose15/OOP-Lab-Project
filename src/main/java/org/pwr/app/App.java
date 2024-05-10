@@ -1,106 +1,90 @@
 package org.pwr.app;
 
-import org.pwr.dtos.ConfigDTO;
-import org.pwr.dtos.SimStateDTO;
+import org.pwr.app.eventhandling.CheckBoxActionListener;
+import org.pwr.app.eventhandling.SliderChangeListener;
+import org.pwr.app.eventhandling.SpinnerChangeListener;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
+import static org.pwr.app.CustomPanels.*;
+
 public class App {
-    private JFrame frame;
+    private JFrame currentFrame;
 
-    private JPanel createSpinnerInputPanel(String label, int min, int max) {
-        JPanel spinnerInputPanel = new JPanel();
-        spinnerInputPanel.setLayout(new GridLayout(2, 1));
-        SpinnerModel spinnerModel = new SpinnerNumberModel(1, min, max, 1); // initial value, min, max, step
-        JSpinner spinner = new JSpinner(spinnerModel);
-        JLabel jlabel = new JLabel(label);
-        spinnerInputPanel.add(jlabel);
-        spinnerInputPanel.add(spinner);
-
-        return spinnerInputPanel;
-    }
-
-    private JPanel createSliderInputPanel(String label, int min, int max) {
-        JPanel sliderInputPanel = new JPanel();
-        sliderInputPanel.setLayout(new GridLayout(2, 1));
-
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, min, max, 1);
-        JLabel label1 = new JLabel(label);
-
-        slider.setMajorTickSpacing(10); // Major ticks every 10 units
-        slider.setMinorTickSpacing(1); // Minor ticks every 1 unit
-        slider.setPaintTicks(true); // Display ticks
-        slider.setPaintLabels(true); // Display labels
-
-        sliderInputPanel.add(label1);
-        sliderInputPanel.add(slider);
-
-        return sliderInputPanel;
-    }
-
-    private JPanel createCheckBoxInputPanel(String label) {
-        JPanel checkBoxInputPanel = new JPanel();
-        checkBoxInputPanel.setLayout(new GridLayout(2, 1));
-
-        JCheckBox checkBox = new JCheckBox(label);
-//        JLabel label1 = new JLabel(label);
-
-//        checkBoxInputPanel.add(label1);
-        checkBoxInputPanel.add(checkBox);
-
-        return checkBoxInputPanel;
-    }
-
-
-    private App() {
-        this.frame = new JFrame("Symulacja Ataku Hakerskiego");
+    private JPanel setMainConfPanel() {
         JPanel confPanel = new JPanel();
-
-        Border border = BorderFactory.createMatteBorder(5, 5, 5, 5, Color.gray);
-
-//        confPanel.setBorder(border);
         confPanel.setLayout(new GridLayout(12, 1));
 
-        JPanel mapPanel = new JPanel();
-//        mapPanel.setBorder(border);
-        mapPanel.setLayout(new GridLayout(1, 1));
+        SpinnerChangeListener spinnerChangeListener = new SpinnerChangeListener();
+        SliderChangeListener sliderChangeListener = new SliderChangeListener();
+        CheckBoxActionListener checkBoxActionListener = new CheckBoxActionListener();
 
-        JPanel statsPanel = new JPanel();
-//        statsPanel.setBorder(border);
-        statsPanel.setLayout(new GridLayout(5, 1));
+        confPanel.add(createSpinnerInputPanel("Liczba hakerów", 0, 100, spinnerChangeListener));
+        confPanel.add(createSpinnerInputPanel("Liczba Informatyków", 0, 100, spinnerChangeListener));
+        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 0, 1000, spinnerChangeListener));
+        confPanel.add(createSliderInputPanel("Kompetencje Informatyków", 0, 100, sliderChangeListener));
+        confPanel.add(createSliderInputPanel("Kompetencje Hakerów", 0, 100, sliderChangeListener));
+        confPanel.add(createSpinnerInputPanel("Tempo utraty odporności", 0, 100, spinnerChangeListener));
+        confPanel.add(createCheckBoxInputPanel("Rozprzestrzenianie się Malwaru", checkBoxActionListener));
+        confPanel.add(createSpinnerInputPanel("Tempo rozprzestrzeniania się malwaru", 0, 100, spinnerChangeListener));
 
+        return confPanel;
+    }
+
+    private JSplitPane setMainRightSplitPlane() {
         JSplitPane rightSplitPane = new JSplitPane();
-//        rightSplitPane.setBorder(border);
         rightSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         rightSplitPane.setDividerLocation(900);
+
+        JPanel mapPanel = setMainMapPanel();
+        JPanel statsPanel = setMainStatsPanel();
+
         rightSplitPane.setTopComponent(mapPanel);
         rightSplitPane.setBottomComponent(statsPanel);
 
+        return rightSplitPane;
+    }
+
+    private JPanel setMainMapPanel() {
+        JPanel mapPanel = new JPanel();
+        mapPanel.setLayout(new GridLayout(1, 1));
+
+        return mapPanel;
+    }
+
+    private JPanel setMainStatsPanel() {
+        JPanel statsPanel = new JPanel();
+        statsPanel.setLayout(new GridLayout(5, 1));
+
+        return statsPanel;
+    }
+
+    private JFrame setMainPage() {
+        this.currentFrame = new JFrame("Symulacja Ataku Hakerskiego");
+
+        Border border = BorderFactory.createMatteBorder(5, 5, 5, 5, Color.gray);
         JSplitPane mainSplitPane = new JSplitPane();
+
         mainSplitPane.setBorder(border);
         mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         mainSplitPane.setDividerLocation(300);
+
+        JPanel confPanel = setMainConfPanel();
+        JSplitPane rightSplitPane = setMainRightSplitPlane();
         mainSplitPane.setTopComponent(confPanel);
         mainSplitPane.setBottomComponent(rightSplitPane);
 
+        currentFrame.add(mainSplitPane, BorderLayout.CENTER);
+        return currentFrame;
+    }
 
-
-        confPanel.add(createSpinnerInputPanel("Liczba hakerów", 0, 100));
-        confPanel.add(createSpinnerInputPanel("Liczba Informatyków", 0, 100));
-        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 0, 1000));
-        confPanel.add(createSliderInputPanel("Kompetencje Informatyków", 0, 100));
-        confPanel.add(createSliderInputPanel("Kompetencje Hakerów", 0, 100));
-        confPanel.add(createSpinnerInputPanel("Tempo utraty odporności", 0, 100));
-        confPanel.add(createCheckBoxInputPanel("Rozprzestrzenianie się Malwaru"));
-        confPanel.add(createSpinnerInputPanel("Tempo rozprzestrzeniania się malwaru", 0, 100));
-
-
-        frame.add(mainSplitPane, BorderLayout.CENTER);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setVisible(true);
+    private App() {
+        setMainPage();
+        currentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        currentFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        currentFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
