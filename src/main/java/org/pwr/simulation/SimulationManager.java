@@ -2,26 +2,36 @@ package org.pwr.simulation;
 
 import org.pwr.dtos.SimStateDTO;
 
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.function.Function;
+
 public class SimulationManager {
     private static SimulationManager instance;
-    private short numberOfNodes;
-    private short numberOfHackers;
-    private short numberOfITExperts;
+    private int numberOfNodes;
+    private int numberOfHackers;
+    private int numberOfITExperts;
     private float avgHackerSkills;
     private float avgItSkills;
+
+    private float resistanceLossPace;
+    private boolean malwareSpread;
+    private float malwareSpreadPace;
     private SimulationThread simulationThread;
 
     public SimulationManager() {}
 
-    public short getNumberOfNodes() {
+    public int getNumberOfNodes() {
         return numberOfNodes;
     }
 
-    public short getNumberOfHackers() {
+    public int getNumberOfHackers() {
         return numberOfHackers;
     }
 
-    public short getNumberOfITExperts() {
+    public int getNumberOfITExperts() {
         return numberOfITExperts;
     }
 
@@ -33,6 +43,18 @@ public class SimulationManager {
         return avgItSkills;
     }
 
+    public float getResistanceLossPace() {
+        return resistanceLossPace;
+    }
+
+    public boolean getMalwareSpread() {
+        return malwareSpread;
+    }
+
+    public float getMalwareSpreadPace() {
+        return malwareSpreadPace;
+    }
+
     public SimulationThread getSimulationThread() {
         return this.simulationThread;
     }
@@ -42,15 +64,16 @@ public class SimulationManager {
         return simStateDTO;
     }
 
-    public void setNumberOfNodes(short numberOfNodes) {
+    public void setNumberOfNodes(int numberOfNodes) {
         this.numberOfNodes = numberOfNodes;
     }
 
-    public void setNumberOfHackers(short numberOfHackers) {
+    public void setNumberOfHackers(int numberOfHackers) {
+        System.out.println("NumberOfHackers received: " + numberOfHackers);
         this.numberOfHackers = numberOfHackers;
     }
 
-    public void setNumberOfITExperts(short numberOfITExperts) {
+    public void setNumberOfITExperts(int numberOfITExperts) {
         this.numberOfITExperts = numberOfITExperts;
     }
 
@@ -60,6 +83,18 @@ public class SimulationManager {
 
     public void setAvgItSkills(float avgItSkills) {
         this.avgItSkills = avgItSkills;
+    }
+
+    public void setResistanceLossPace(float resistanceLossPace) {
+        this.resistanceLossPace = resistanceLossPace;
+    }
+
+    public void setMalwareSpread(boolean malwareSpread) {
+        this.malwareSpread = malwareSpread;
+    }
+
+    public void setMalwareSpreadPace(float malwareSpreadPace) {
+        this.malwareSpreadPace = malwareSpreadPace;
     }
 
     public void setSimulationThread(SimulationThread simulationThread) {
