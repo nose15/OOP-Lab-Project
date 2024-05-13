@@ -1,8 +1,4 @@
-package org.pwr.app;
-
-import org.pwr.app.eventhandling.CheckBoxActionListener;
-import org.pwr.app.eventhandling.SliderChangeListener;
-import org.pwr.app.eventhandling.SpinnerChangeListener;
+package org.pwr.app.gui;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -10,8 +6,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-import static org.pwr.app.CustomPanels.*;
-import static org.pwr.app.CustomPanels.createSpinnerInputPanel;
+import static org.pwr.app.gui.CustomPanels.*;
+import static org.pwr.app.gui.CustomPanels.createSpinnerInputPanel;
 
 public class View {
     private JFrame currentFrame;

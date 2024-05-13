@@ -1,6 +1,6 @@
 package org.pwr.app.eventhandling;
 
-import org.pwr.InputHandler;
+import org.pwr.app.InputHandler;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -15,6 +15,6 @@ public class SliderChangeListener extends BaseEventListener implements ChangeLis
     public void stateChanged(ChangeEvent changeEvent) {
         JSlider slider = (JSlider)changeEvent.getSource();
         int sliderValue = slider.getValue();
-        this.inputHandler.HandleInput(slider.getName(), sliderValue);
+        this.inputHandler.handleInput(slider.getName(), sliderValue);
     }
 }

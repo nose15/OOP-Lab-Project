@@ -1,6 +1,6 @@
 package org.pwr.simulation;
 
-import org.pwr.InputHandler;
+import org.pwr.app.InputHandler;
 
 public class SimInputHandler implements InputHandler {
     private final SimulationManager simulationManager;
@@ -10,7 +10,7 @@ public class SimInputHandler implements InputHandler {
     }
 
     @Override
-    public void HandleInput(String name, int value) {
+    public void handleInput(String name, int value) {
         switch (name) {
             case "setNumberOfNodes":
                 this.simulationManager.setNumberOfNodes(value);
@@ -34,12 +34,12 @@ public class SimInputHandler implements InputHandler {
     }
 
     @Override
-    public void HandleInput(String name, float value) {
+    public void handleInput(String name, float value) {
 
     }
 
     @Override
-    public void HandleInput(String name, boolean value) {
+    public void handleInput(String name, boolean value) {
         switch (name) {
             case "setMalwareSpread":
                 this.simulationManager.setMalwareSpread(value);

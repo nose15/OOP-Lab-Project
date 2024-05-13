@@ -1,6 +1,6 @@
 package org.pwr.app.eventhandling;
 
-import org.pwr.InputHandler;
+import org.pwr.app.InputHandler;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,6 +15,6 @@ public class CheckBoxActionListener extends BaseEventListener implements ActionL
     public void actionPerformed(ActionEvent actionEvent) {
         JCheckBox checkBox = (JCheckBox) actionEvent.getSource();
         boolean checkBoxValue = checkBox.isSelected();
-        this.inputHandler.HandleInput(checkBox.getName(), checkBoxValue);
+        this.inputHandler.handleInput(checkBox.getName(), checkBoxValue);
     }
 }

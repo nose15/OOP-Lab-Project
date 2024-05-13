@@ -1,8 +1,4 @@
-package org.pwr.app;
-
-import org.pwr.app.eventhandling.CheckBoxActionListener;
-import org.pwr.app.eventhandling.SliderChangeListener;
-import org.pwr.app.eventhandling.SpinnerChangeListener;
+package org.pwr.app.gui;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;

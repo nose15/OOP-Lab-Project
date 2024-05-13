@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class SimulationManager {
-    private static SimulationManager instance;
     private int numberOfNodes;
     private int numberOfHackers;
     private int numberOfITExperts;
@@ -69,7 +68,6 @@ public class SimulationManager {
     }
 
     public void setNumberOfHackers(int numberOfHackers) {
-        System.out.println("NumberOfHackers received: " + numberOfHackers);
         this.numberOfHackers = numberOfHackers;
     }
 

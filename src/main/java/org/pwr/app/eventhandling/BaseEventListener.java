@@ -1,6 +1,6 @@
 package org.pwr.app.eventhandling;
 
-import org.pwr.InputHandler;
+import org.pwr.app.InputHandler;
 
 public class BaseEventListener {
     protected final InputHandler inputHandler;

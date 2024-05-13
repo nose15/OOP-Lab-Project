@@ -1,6 +1,6 @@
 package org.pwr.app.eventhandling;
 
-import org.pwr.InputHandler;
+import org.pwr.app.InputHandler;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -15,6 +15,6 @@ public class SpinnerChangeListener extends BaseEventListener implements ChangeLi
     public void stateChanged(ChangeEvent changeEvent) {
         JSpinner spinner = (JSpinner) changeEvent.getSource();
         int spinnerValue = (int) spinner.getValue();
-        inputHandler.HandleInput(spinner.getName(), spinnerValue);
+        inputHandler.handleInput(spinner.getName(), spinnerValue);
     }
 }
