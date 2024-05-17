@@ -7,7 +7,7 @@ public abstract class Node {
 
     List<Node> connectedNodes;
     Node parent;
-    private float CurrentState;
+    private float currentState;
     private float impactCoeficient;
 
     public Node()
@@ -22,6 +22,6 @@ public abstract class Node {
     {
         return connectedNodes;
     }
-    abstract void SetState();
-    abstract void Communicate();
+    abstract void setState();
+    abstract void communicate();
 }
