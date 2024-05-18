@@ -11,6 +11,7 @@ public class Simulation {
     //TODO: Node and children
     //TODO: Generate graph
     //TODO: Agent fundaments
+
     public Simulation(SimManagerData simManagerData) {
         this.simData = simManagerData;
         this.simulationMap = new ArrayList<>(20);
