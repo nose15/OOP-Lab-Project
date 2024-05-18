@@ -1,9 +1,4 @@
-package org.pwr.simulation.graph.generate;
-
-import org.pwr.simulation.graph.struct.Computer;
-import org.pwr.simulation.graph.struct.Node;
-import org.pwr.simulation.graph.struct.Router;
-import org.pwr.simulation.graph.struct.Switch;
+package org.pwr.simulation.graph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +9,7 @@ public class GraphGenerator {
     private int numberOfSwitch;
     private int numberOfComputers;
 
-    //Complex generator
+    //Complex generator attributes
     private float switchDeepness; //How many switches in a row (switch that have a switch parent)
     private float computerConsistency; //How many computers is connected per switch (focus on equal distribution or totally random)
 
@@ -98,6 +93,7 @@ public class GraphGenerator {
         this.switchDeepness = switchDeepness;
         this.computerConsistency = computerConsistency;
         //TODO: Complex custom generator
+
     }
 
     public Node getHead()

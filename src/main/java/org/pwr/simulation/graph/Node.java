@@ -1,4 +1,4 @@
-package org.pwr.simulation.graph.struct;
+package org.pwr.simulation.graph;
 
 import java.util.ArrayList;
 import java.util.List;

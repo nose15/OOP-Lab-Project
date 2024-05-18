@@ -1,4 +1,4 @@
-package org.pwr.simulation.graph.struct;
+package org.pwr.simulation.graph;
 
 public class Computer extends Node {
 
