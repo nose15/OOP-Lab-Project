@@ -1,5 +1,5 @@
 package org.pwr.simulation;
-import org.pwr.dtos.SimulationMapDTO;
+import org.pwr.dtos.SimGraphDTO;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -12,8 +12,8 @@ public class SimulationThread extends Thread {
         this.simulation = new Simulation(simManagerData);
     }
 
-    public SimulationMapDTO getMap() {
-        return new SimulationMapDTO(this.simulation.getMap());
+    public SimGraphDTO getGraph() {
+        return new SimGraphDTO(this.simulation.getRootNode());
     }
 
     @Override

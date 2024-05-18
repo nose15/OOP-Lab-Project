@@ -1,9 +1,9 @@
 package org.pwr.dtos;
 
 public class SimStateDTO {
-    public SimulationMapDTO simulationMapDTO;
+    public SimGraphDTO simGraphDTO;
 
-    public SimStateDTO(SimulationMapDTO simulationMapDTO) {
-        this.simulationMapDTO = simulationMapDTO;
+    public SimStateDTO(SimGraphDTO simGraphDTO) {
+        this.simGraphDTO = simGraphDTO;
     }
 }

@@ -1,11 +1,15 @@
 package org.pwr.simulation;
 
+import org.pwr.simulation.graph.GraphGenerator;
+import org.pwr.simulation.graph.Node;
+
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Simulation {
     private final SimManagerData simData;
-    private final ArrayList<String> simulationMap;
+    private Node rootNode;
+    private final GraphGenerator graphGenerator;
 
 
     //TODO: Node and children
@@ -14,32 +18,18 @@ public class Simulation {
 
     public Simulation(SimManagerData simManagerData) {
         this.simData = simManagerData;
-        this.simulationMap = new ArrayList<>(20);
-        System.out.println(simManagerData + " simulation smd : sd " + this.simData);
+        this.rootNode = null;
+        this.graphGenerator = new GraphGenerator();
     }
 
-    public ArrayList<String> getMap() {
-        return this.simulationMap;
+    public Node getRootNode() {
+        return this.rootNode;
     }
 
     public void run() {
         while (true) {
             // Just an example, may be deleted
-
-            try {
-                simulationMap.clear();
-
-
-                for (int i = 0; i < 20; i++) {
-                    simulationMap.add(String.valueOf(Math.random() * 10));
-                }
-                TimeUnit.SECONDS.sleep(5);
-
-
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e.getMessage());
-            }
-
+            this.rootNode = graphGenerator.getHead();
             // ---
         }
     }

@@ -7,6 +7,7 @@ import org.pwr.app.eventhandling.SliderChangeListener;
 import org.pwr.app.eventhandling.SpinnerChangeListener;
 import org.pwr.dtos.ConfigDTO;
 import org.pwr.dtos.SimStateDTO;
+import org.pwr.simulation.graph.Node;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -109,9 +110,10 @@ public class View {
 
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
-            mapListModel.clear();
-            for (var str : simState.simulationMapDTO.getSimMap()) {
-                mapListModel.addElement(str);
+            System.out.println(mapListModel);
+            if (simState.simGraphDTO.getRootNode() != null) {
+                mapListModel.clear();
+                mapListModel.addElement(simState.simGraphDTO.getRootNode().toString());
             }
         });
     }

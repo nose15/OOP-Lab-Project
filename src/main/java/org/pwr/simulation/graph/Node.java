@@ -22,6 +22,10 @@ public abstract class Node {
     {
         return connectedNodes;
     }
+
+    public String toString() {
+        return String.valueOf(this.hashCode());
+    }
     abstract void setState();
     abstract void communicate();
 }
