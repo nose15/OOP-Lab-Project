@@ -1,49 +1,83 @@
 package org.pwr.simulation;
 
-import org.pwr.app.InputHandler;
+import org.pwr.dtos.ConfigDTO;
 
-public class SimInputHandler implements InputHandler {
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+public class SimInputHandler {
     private final SimulationManager simulationManager;
+    private final BlockingQueue<ConfigDTO> configDTOS;
+    private final ScheduledExecutorService scheduler;
+    private final SimManagerData simManagerData;
 
-    public SimInputHandler(SimulationManager simulationManager) {
+    public SimInputHandler(SimulationManager simulationManager, BlockingQueue<ConfigDTO> queue) {
+        this.configDTOS = queue;
         this.simulationManager = simulationManager;
+        this.scheduler = new ScheduledThreadPoolExecutor(1);
+        this.simManagerData = simulationManager.getSimManagerData();
     }
 
-    @Override
-    public void handleInput(String name, int value) {
-        switch (name) {
+
+    public void handleInput() {
+        ConfigDTO configDTO = takeRecentConfigDTO();
+
+        switch (configDTO.command) {
             case "setNumberOfNodes":
-                this.simulationManager.setNumberOfNodes(value);
+                this.simManagerData.numberOfNodes = (Integer.parseInt(configDTO.value));
                 break;
             case "setNumberOfITExperts":
-                this.simulationManager.setNumberOfITExperts(value);
+                this.simManagerData.numberOfITExperts = (Integer.parseInt(configDTO.value));
                 break;
             case "setAvgHackerSkills":
-                this.simulationManager.setAvgHackerSkills(value);
+                this.simManagerData.avgHackerSkills = (Integer.parseInt(configDTO.value));
                 break;
             case "setAvgItSkills":
-                this.simulationManager.setAvgItSkills(value);
+                this.simManagerData.avgItSkills = (Integer.parseInt(configDTO.value));
                 break;
             case "setResistanceLossPace":
-                this.simulationManager.setResistanceLossPace(value);
+                this.simManagerData.resistanceLossPace = (Integer.parseInt(configDTO.value));
                 break;
             case "setMalwareSpreadPace":
-                this.simulationManager.setMalwareSpreadPace(value);
+                this.simManagerData.malwareSpreadPace = (Integer.parseInt(configDTO.value));
+                break;
+            case "setMalwareSpread":
+                this.simManagerData.malwareSpread = (Boolean.parseBoolean(configDTO.value));
+                break;
+            case "setNumberOfHackers":
+                this.simManagerData.numberOfHackers = (Integer.parseInt(configDTO.value));
+                break;
+            case "setAllZero":
+                this.simManagerData.numberOfNodes = 0;
+                this.simManagerData.numberOfITExperts = 0;
+                this.simManagerData.numberOfHackers = 0;
+                this.simManagerData.avgHackerSkills = 0;
+                this.simManagerData.avgItSkills = 0;
+                this.simManagerData.resistanceLossPace = 0;
+                this.simManagerData.malwareSpread = false;
+                this.simManagerData.malwareSpreadPace = 0;
+                break;
+            case "start":
+                this.simulationManager.startSimulation();
                 break;
         }
     }
 
-    @Override
-    public void handleInput(String name, float value) {
-
-    }
-
-    @Override
-    public void handleInput(String name, boolean value) {
-        switch (name) {
-            case "setMalwareSpread":
-                this.simulationManager.setMalwareSpread(value);
+    private ConfigDTO takeRecentConfigDTO() {
+        try {
+            return this.configDTOS.take();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 
+    public void start() {
+        this.scheduler.scheduleAtFixedRate(() -> this.handleInput(), 0, 1, TimeUnit.MILLISECONDS);
+    }
+
+    public void stop() {
+        scheduler.shutdown();
+    }
 }

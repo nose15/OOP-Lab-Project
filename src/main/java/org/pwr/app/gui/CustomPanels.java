@@ -55,4 +55,17 @@ public class CustomPanels {
         return checkBoxInputPanel;
     }
 
+    public static JPanel createButtonPanel(String label, ActionListener buttonActionListener, String name) {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(1, 1));
+
+        JButton button = new JButton(label);
+        button.setName(name);
+
+        button.addActionListener(buttonActionListener);
+        buttonPanel.add(button);
+
+        return buttonPanel;
+    }
+
 }

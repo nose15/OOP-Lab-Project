@@ -1,121 +1,50 @@
 package org.pwr.simulation;
 
+import org.pwr.dtos.ConfigDTO;
 import org.pwr.dtos.SimStateDTO;
 
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.concurrent.*;
 
 public class SimulationManager {
-    private int numberOfNodes;
-    private int numberOfHackers;
-    private int numberOfITExperts;
-    private float avgHackerSkills;
-    private float avgItSkills;
+    private final SimulationThread simulationThread;
+    private final BlockingQueue<String> threadControlQueue;
+    private final SimInputHandler simInputHandler;
+    private final SimManagerData simManagerData;
 
-    private float resistanceLossPace;
-    private boolean malwareSpread;
-    private float malwareSpreadPace;
-    private SimulationThread simulationThread;
+    public SimulationManager(BlockingQueue<SimStateDTO> simToGuiQueue, BlockingQueue<ConfigDTO> guiToSimQueue) {
+        this.threadControlQueue = new LinkedBlockingQueue<>();
+        this.simManagerData = new SimManagerData();
+        this.simInputHandler = new SimInputHandler(this, guiToSimQueue);
+        this.simulationThread = new SimulationThread(simManagerData, this.threadControlQueue);
+        SimStateUpdater simStateUpdater = new SimStateUpdater(this.simulationThread.getMap(), simToGuiQueue);
 
-    public SimulationManager() {}
-
-    public int getNumberOfNodes() {
-        return numberOfNodes;
-    }
-
-    public int getNumberOfHackers() {
-        return numberOfHackers;
-    }
-
-    public int getNumberOfITExperts() {
-        return numberOfITExperts;
-    }
-
-    public float getAvgHackerSkills() {
-        return avgHackerSkills;
-    }
-
-    public float getAvgItSkills() {
-        return avgItSkills;
-    }
-
-    public float getResistanceLossPace() {
-        return resistanceLossPace;
-    }
-
-    public boolean getMalwareSpread() {
-        return malwareSpread;
-    }
-
-    public float getMalwareSpreadPace() {
-        return malwareSpreadPace;
-    }
-
-    public SimulationThread getSimulationThread() {
-        return this.simulationThread;
-    }
-
-    public SimStateDTO getSimState() {
-        SimStateDTO simStateDTO = new SimStateDTO();
-        return simStateDTO;
-    }
-
-    public void setNumberOfNodes(int numberOfNodes) {
-        this.numberOfNodes = numberOfNodes;
-    }
-
-    public void setNumberOfHackers(int numberOfHackers) {
-        this.numberOfHackers = numberOfHackers;
-    }
-
-    public void setNumberOfITExperts(int numberOfITExperts) {
-        this.numberOfITExperts = numberOfITExperts;
-    }
-
-    public void setAvgHackerSkills(float avgHackerSkills) {
-        this.avgHackerSkills = avgHackerSkills;
-    }
-
-    public void setAvgItSkills(float avgItSkills) {
-        this.avgItSkills = avgItSkills;
-    }
-
-    public void setResistanceLossPace(float resistanceLossPace) {
-        this.resistanceLossPace = resistanceLossPace;
-    }
-
-    public void setMalwareSpread(boolean malwareSpread) {
-        this.malwareSpread = malwareSpread;
-    }
-
-    public void setMalwareSpreadPace(float malwareSpreadPace) {
-        this.malwareSpreadPace = malwareSpreadPace;
-    }
-
-    public void setSimulationThread(SimulationThread simulationThread) {
-        this.simulationThread = simulationThread;
+        simStateUpdater.run();
+        this.simInputHandler.start();
+        this.runSimulationThread();
     }
 
     public void startSimulation() {
-        this.runSimulationThread();
+        try {
+            this.threadControlQueue.put("start");
+        } catch (InterruptedException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public void pauseSimulation() {
         simulationThread.pause();
     }
 
-    public void resumeSimulation() {
-        simulationThread.resume();
-    }
-
     public void stopSimulation() {
-        simulationThread.stop();
+        simInputHandler.stop();
+        simulationThread.interrupt();
     }
 
-    private void runSimulationThread() {
-        simulationThread.run();
+    private void runSimulationThread()  {
+        simulationThread.start();
+    }
+
+    public SimManagerData getSimManagerData() {
+        return simManagerData;
     }
 }

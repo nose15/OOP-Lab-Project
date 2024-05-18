@@ -1,10 +1,19 @@
 package org.pwr.app.gui;
 
+import org.pwr.app.InputManager;
+import org.pwr.app.eventhandling.ButtonActionListener;
+import org.pwr.app.eventhandling.CheckBoxActionListener;
+import org.pwr.app.eventhandling.SliderChangeListener;
+import org.pwr.app.eventhandling.SpinnerChangeListener;
+import org.pwr.dtos.ConfigDTO;
+import org.pwr.dtos.SimStateDTO;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.concurrent.*;
 
 import static org.pwr.app.gui.CustomPanels.*;
 import static org.pwr.app.gui.CustomPanels.createSpinnerInputPanel;
@@ -14,11 +23,20 @@ public class View {
     private final ChangeListener spinnerChangeListener;
     private final ChangeListener sliderChangeListener;
     private final ActionListener checkBoxActionListener;
+    private final ActionListener buttonActionListener;
+    private DefaultListModel<String> mapListModel;
+    private BlockingQueue<SimStateDTO> simToGuiQueue;
+    private InputManager inputManager;
 
-    public View(ChangeListener spinnerChangeListener, ChangeListener sliderChangeListener, ActionListener checkBoxActionListener) {
-        this.spinnerChangeListener = spinnerChangeListener;
-        this.sliderChangeListener = sliderChangeListener;
-        this.checkBoxActionListener = checkBoxActionListener;
+    public View(BlockingQueue<SimStateDTO> simToGuiQueue, BlockingQueue<ConfigDTO> guiToSimQueue) {
+        this.inputManager = new InputManager(guiToSimQueue);
+        this.simToGuiQueue = simToGuiQueue;
+        this.spinnerChangeListener = new SpinnerChangeListener(this.inputManager);
+        this.sliderChangeListener = new SliderChangeListener(this.inputManager);
+        this.checkBoxActionListener = new CheckBoxActionListener(this.inputManager);
+        this.buttonActionListener = new ButtonActionListener(this.inputManager);
+
+        this.mapListModel = new DefaultListModel<>();
     }
 
     private JPanel setMainConfPanel() {
@@ -35,6 +53,7 @@ public class View {
         confPanel.add(createSpinnerInputPanel("Tempo utraty odporności", 0, 100, spinnerChangeListener, "setResistanceLossPace"));
         confPanel.add(createCheckBoxInputPanel("Rozprzestrzenianie się Malwaru", checkBoxActionListener, "setMalwareSpread"));
         confPanel.add(createSpinnerInputPanel("Tempo rozprzestrzeniania się malwaru", 0, 100, spinnerChangeListener, "setMalwareSpreadPace"));
+        confPanel.add(createButtonPanel("Start", this.buttonActionListener, "start"));
 
         return confPanel;
     }
@@ -44,8 +63,8 @@ public class View {
         rightSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         rightSplitPane.setDividerLocation(900);
 
-        JPanel mapPanel = setMainMapPanel();
-        JPanel statsPanel = setMainStatsPanel();
+        JPanel mapPanel = addMainMapPanel();
+        JPanel statsPanel = addMainStatsPanel();
 
         rightSplitPane.setTopComponent(mapPanel);
         rightSplitPane.setBottomComponent(statsPanel);
@@ -53,14 +72,16 @@ public class View {
         return rightSplitPane;
     }
 
-    private JPanel setMainMapPanel() {
+    private JPanel addMainMapPanel() {
         JPanel mapPanel = new JPanel();
         mapPanel.setLayout(new GridLayout(1, 1));
+        JList<String> map = new JList<>(this.mapListModel);
+        mapPanel.add(map);
 
         return mapPanel;
     }
 
-    private JPanel setMainStatsPanel() {
+    private JPanel addMainStatsPanel() {
         JPanel statsPanel = new JPanel();
         statsPanel.setLayout(new GridLayout(5, 1));
 
@@ -86,11 +107,30 @@ public class View {
         return currentFrame;
     }
 
+    private void UpdateSimDisplay(SimStateDTO simState) {
+        SwingUtilities.invokeLater(() -> {
+            mapListModel.clear();
+            for (var str : simState.simulationMapDTO.getSimMap()) {
+                mapListModel.addElement(str);
+            }
+        });
+    }
 
     public void run() {
         setMainPage();
         currentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         currentFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentFrame.setVisible(true);
+
+        ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(2);
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                SimStateDTO simState = this.simToGuiQueue.take();
+                UpdateSimDisplay(simState);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }, 0,  1, TimeUnit.SECONDS);
     }
 }

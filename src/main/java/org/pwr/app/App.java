@@ -1,27 +1,22 @@
 package org.pwr.app;
 
-import org.pwr.app.eventhandling.CheckBoxActionListener;
-import org.pwr.app.eventhandling.SliderChangeListener;
-import org.pwr.app.eventhandling.SpinnerChangeListener;
 import org.pwr.app.gui.View;
+import org.pwr.dtos.ConfigDTO;
+import org.pwr.dtos.SimStateDTO;
 import org.pwr.simulation.SimInputHandler;
 import org.pwr.simulation.SimulationManager;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 public class App {
-    private final View view;
-    private final SimulationManager simulationManager;
-    private InputHandler inputHandler;
-
-
     private App() {
-        this.simulationManager = new SimulationManager();
-        this.inputHandler = new SimInputHandler(simulationManager);
+        BlockingQueue<SimStateDTO> simToGUIQueue = new LinkedBlockingQueue<SimStateDTO>(2);
+        BlockingQueue<ConfigDTO> guiToSimQueue = new LinkedBlockingQueue<ConfigDTO>(2);
 
-        SliderChangeListener sliderChangeListener = new SliderChangeListener(this.inputHandler);
-        SpinnerChangeListener spinnerChangeListener = new SpinnerChangeListener(this.inputHandler);
-        CheckBoxActionListener checkBoxActionListener = new CheckBoxActionListener(this.inputHandler);
-
-        view = new View(spinnerChangeListener, sliderChangeListener, checkBoxActionListener);
+        new SimulationManager(simToGUIQueue, guiToSimQueue);
+        View view = new View(simToGUIQueue, guiToSimQueue);
         view.run();
     }
 

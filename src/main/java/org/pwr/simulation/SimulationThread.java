@@ -1,25 +1,35 @@
 package org.pwr.simulation;
+import org.pwr.dtos.SimulationMapDTO;
 
-public class SimulationThread implements Runnable {
+import java.util.concurrent.BlockingQueue;
 
-    public SimulationThread() {
-        Simulation simulation = new Simulation();
+public class SimulationThread extends Thread {
+    private final BlockingQueue<String> managerToThreadQueue;
+    private final Simulation simulation;
+
+    public SimulationThread(SimManagerData simManagerData, BlockingQueue<String> managerToThreadQueue) {
+        this.managerToThreadQueue = managerToThreadQueue;
+        this.simulation = new Simulation(simManagerData);
+    }
+
+    public SimulationMapDTO getMap() {
+        return new SimulationMapDTO(this.simulation.getMap());
     }
 
     @Override
     public void run() {
-        System.out.println("Sim Thread Running");
-    }
-
-    public void stop() {
-        System.out.println("Sim Thread Stopped");
+        System.out.println("Sim Thread running");
+        while (true) {
+            try {
+                if(managerToThreadQueue.take().equals("start")) break;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        simulation.run();
     }
 
     public void pause() {
         System.out.println("Sim Thread Paused");
-    }
-
-    public void resume() {
-        System.out.println("Sim Thread Resumed");
     }
 }
