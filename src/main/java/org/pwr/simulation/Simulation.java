@@ -1,5 +1,6 @@
 package org.pwr.simulation;
 
+import org.pwr.simulation.agents.Agent;
 import org.pwr.simulation.graph.GraphGenerator;
 import org.pwr.simulation.graph.Node;
 
@@ -16,6 +17,7 @@ public class Simulation {
     private long clockStep;
     private long timestampStart;
     private long timestampEnd;
+    private ArrayList<Agent> agents;
 
 
     //TODO: Node and children
@@ -48,6 +50,8 @@ public class Simulation {
     }
 
     public void step() {
-        System.out.println("Step");
+        for (Agent agent : agents) {
+            agent.act();
+        }
     }
 }
