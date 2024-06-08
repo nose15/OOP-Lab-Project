@@ -1,11 +1,11 @@
 package org.pwr.simulation.graph;
 
 public class Router extends Node{
-    void setState()
+    public void setState()
     {
 
     }
-    void communicate()
+    public void communicate()
     {
 
     }

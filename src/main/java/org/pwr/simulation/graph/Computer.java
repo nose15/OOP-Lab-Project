@@ -6,11 +6,11 @@ public class Computer extends Node {
     {
         super();
     }
-    void communicate()
+    public void communicate()
     {
 
     }
-    void setState()
+    public void setState()
     {
 
     }

@@ -26,6 +26,8 @@ public abstract class Node {
     public String toString() {
         return String.valueOf(this.hashCode());
     }
-    abstract void setState();
-    abstract void communicate();
+
+    public abstract void act();
+    public abstract void setState();
+    public abstract void communicate();
 }

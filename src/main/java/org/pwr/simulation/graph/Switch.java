@@ -8,11 +8,11 @@ public class Switch extends Node {
 
     }
 
-    void communicate()
+    public void communicate()
     {
 
     }
-    void setState()
+    public void setState()
     {
 
     }
