@@ -27,7 +27,13 @@ public abstract class Node {
         return String.valueOf(this.hashCode());
     }
 
+    public float getState() {
+        return currentState;
+    }
+
     public abstract void act();
     public abstract void setState();
     public abstract void communicate();
+    public abstract void hack(float skill);
+    public abstract void heal(float skill);
 }
