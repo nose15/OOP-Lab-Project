@@ -20,65 +20,58 @@ public class GraphGenerator {
         this.numberOfSwitch = 4;
         this.numberOfComputers = 20;
 
-        for(int i = 0; i < numberOfSwitch; i++)
-        {
-            head.addConnection(new Switch().setParent(head));
-            for(int j = 0; j < (numberOfComputers/numberOfSwitch) + (numberOfComputers%numberOfSwitch>i?1:0); j++)
-            {
-                head.getConnections().get(i).addConnection(new Computer().setParent(head.getConnections().get(i)));
-            }
-        }
+
     }
 
-    //Simple custom generator
-    //Explain:
-    //  switch can be Parent of another switch,
-    //  but there is no connection between switches
-    //  with same parent (only by parent)
-    public GraphGenerator(int numberOfSwitch, int numberOfComputers)
-    {
-        this.head = new Router();
-        this.numberOfSwitch = numberOfSwitch;
-        this.numberOfComputers = numberOfComputers;
-
-        Random random = new Random();
-        List<Switch> switches = new ArrayList<>();
-
-        //Switch generation
-        for(int i = 0; i < numberOfSwitch; i++)
-        {
-            switches.add(new Switch());
-            float chance = random.nextFloat(1,0);
-
-            if(chance > 0.5 || i == 0)
-            {
-                head.addConnection(switches.get(i));
-                switches.get(i).setParent(head);
-            }
-            else
-            {
-                int chooseSwitch = random.nextInt(i-1);
-                switches.get(chooseSwitch).addConnection(switches.get(i));
-                switches.get(i).setParent(switches.get(chooseSwitch));
-            }
-        }
-
-        //Computer generation
-            //Part 1: Place one computer to endpoint switches
-        for(int i = 0; i < numberOfSwitch; i++)
-        {
-            if(switches.get(i).getConnections().isEmpty())
-            {
-                switches.get(i).addConnection(new Computer().setParent(switches.get(i)));
-            }
-        }
-            //Part 2: Place the rest of computers
-        for(int i = 0; i < numberOfComputers - numberOfSwitch; i++)
-        {
-            int chooseSwitch = random.nextInt(numberOfSwitch);
-            switches.get(chooseSwitch).addConnection(new Computer().setParent(switches.get(chooseSwitch)));
-        }
-    }
+//    //Simple custom generator
+//    //Explain:
+//    //  switch can be Parent of another switch,
+//    //  but there is no connection between switches
+//    //  with same parent (only by parent)
+//    public GraphGenerator(int numberOfSwitch, int numberOfComputers)
+//    {
+//        this.head = new Router();
+//        this.numberOfSwitch = numberOfSwitch;
+//        this.numberOfComputers = numberOfComputers;
+//
+//        Random random = new Random();
+//        List<Switch> switches = new ArrayList<>();
+//
+//        //Switch generation
+//        for(int i = 0; i < numberOfSwitch; i++)
+//        {
+//            switches.add(new Switch());
+//            float chance = random.nextFloat(1,0);
+//
+//            if(chance > 0.5 || i == 0)
+//            {
+//                head.addConnection(switches.get(i));
+//                switches.get(i).setParent(head);
+//            }
+//            else
+//            {
+//                int chooseSwitch = random.nextInt(i-1);
+//                switches.get(chooseSwitch).addConnection(switches.get(i));
+//                switches.get(i).setParent(switches.get(chooseSwitch));
+//            }
+//        }
+//
+//        //Computer generation
+//            //Part 1: Place one computer to endpoint switches
+//        for(int i = 0; i < numberOfSwitch; i++)
+//        {
+//            if(switches.get(i).getConnections().isEmpty())
+//            {
+//                switches.get(i).addConnection(new Computer().setParent(switches.get(i)));
+//            }
+//        }
+//            //Part 2: Place the rest of computers
+//        for(int i = 0; i < numberOfComputers - numberOfSwitch; i++)
+//        {
+//            int chooseSwitch = random.nextInt(numberOfSwitch);
+//            switches.get(chooseSwitch).addConnection(new Computer().setParent(switches.get(chooseSwitch)));
+//        }
+//    }
 
     //Complex custom generator
     //Plan:
@@ -87,7 +80,7 @@ public class GraphGenerator {
     // moreover add possibility to connection between switches
     public GraphGenerator(int numberOfSwitch, int numberOfComputers, float switchDeepness, float computerConsistency)
     {
-        this(numberOfSwitch, numberOfComputers);
+        //this(numberOfSwitch, numberOfComputers);
         this.numberOfSwitch = numberOfSwitch;
         this.numberOfComputers = numberOfComputers;
         this.switchDeepness = switchDeepness;

@@ -5,26 +5,20 @@ import java.util.List;
 
 public abstract class Node {
 
-    List<Node> connectedNodes;
-    Node parent;
-    private float currentState;
-    private float impactCoeficient;
+    protected float currentState;
+    protected float impactCoeficient;
+    protected int id;
 
     public Node()
     {
-        connectedNodes = new ArrayList<>();
-    }
-    public void addConnection(Node node)
-    {
-        connectedNodes.add(node);
-    }
-    public List<Node> getConnections()
-    {
-        return connectedNodes;
     }
 
     public String toString() {
         return String.valueOf(this.hashCode());
+    }
+    public int getId()
+    {
+        return id;
     }
     abstract void setState();
     abstract void communicate();
