@@ -14,13 +14,12 @@ public abstract class Node {
     Node parent;
     protected float stateRange;
     protected float currentImpact;
-    protected float hasAgent;
 
     public Node()
     {
         connectedNodes = new ArrayList<>();
         this.impactCoeficient = 2;
-        this.balancingPace = 0.1f;
+        this.balancingPace = 0.01f;
     }
     public void addConnection(Node node)
     {
@@ -82,10 +81,20 @@ public abstract class Node {
         return id;
     }
 
+    public Node getParents() {
+        return parent;
+    }
+
     public abstract void communicate();
     public abstract void setParent(Node parent);
 
     public abstract void addSwitch(Node vertex);
 
     public abstract void addComputer(Node vertex);
+
+    public abstract ArrayList<Node> revealChildren();
+
+    public abstract ArrayList<Node> revealSwitches();
+
+    public abstract Node revealParents();
 }

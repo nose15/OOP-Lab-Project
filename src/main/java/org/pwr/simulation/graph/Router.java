@@ -23,6 +23,22 @@ public class Router extends Node{
     {
         return;
     }
+
+    @Override
+    public ArrayList<Node> revealChildren() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Node> revealSwitches() {
+        return null;
+    }
+
+    @Override
+    public Node revealParents() {
+        return null;
+    }
+
     public void setParent(Node p)
     {
         return;
