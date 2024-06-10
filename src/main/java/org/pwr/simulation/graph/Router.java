@@ -19,6 +19,10 @@ public class Router extends Node{
     {
         return switches;
     }
+    public ArrayList<Node> getComputers()
+    {
+        return null;
+    }
     public void addComputer(Node c)
     {
         return;

@@ -1,5 +1,7 @@
 package org.pwr.simulation.graph;
 
+import java.util.ArrayList;
+
 public class Computer extends Node {
 
     private static int counter = 0;
@@ -20,6 +22,14 @@ public class Computer extends Node {
     public Node getParent()
     {
         return parent;
+    }
+    public ArrayList<Node> getSwitches()
+    {
+        return null;
+    }
+    public ArrayList<Node> getComputers()
+    {
+        return null;
     }
     public void setParent(Node p)
     {
