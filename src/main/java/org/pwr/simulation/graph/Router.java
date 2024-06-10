@@ -3,7 +3,7 @@ package org.pwr.simulation.graph;
 import java.util.ArrayList;
 
 public class Router extends Node{
-    private ArrayList<Node> switches = new ArrayList<>();
+    private final ArrayList<Node> switches = new ArrayList<>();
 
     public Router()
     {

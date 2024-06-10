@@ -42,13 +42,4 @@ public class Computer extends Node {
     {
         parent = p;
     }
-    public void addSwitch(Node s)
-    {
-        return;
-    }
-    public void addComputer(Node c)
-    {
-        return;
-    }
-
 }

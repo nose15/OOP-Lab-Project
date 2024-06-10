@@ -8,8 +8,8 @@ public class Switch extends Node {
     private final float parentRevealThreshold;
 
     private static int counter = 0;
-    private ArrayList<Node> switches = new ArrayList<>();
-    private ArrayList<Node> computers = new ArrayList<>();
+    private final ArrayList<Node> switches = new ArrayList<>();
+    private final ArrayList<Node> computers = new ArrayList<>();
     private Node parent;
     public Switch()
     {
@@ -80,5 +80,4 @@ public class Switch extends Node {
 
         return parent;
     }
-
 }
