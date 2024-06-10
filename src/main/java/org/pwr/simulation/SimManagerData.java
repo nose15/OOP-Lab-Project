@@ -11,6 +11,8 @@ public class SimManagerData {
     public boolean malwareSpread;
     public float malwareSpreadPace;
 
+    public int clockStep;
+
     public SimManagerData() {
         this.numberOfHackers = 0;
         this.malwareSpreadPace = 0;
@@ -20,5 +22,6 @@ public class SimManagerData {
         this.numberOfITExperts = 0;
         this.malwareSpread = false;
         this.numberOfNodes = 0;
+        this.clockStep = 200;
     }
 }
