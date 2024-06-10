@@ -20,6 +20,9 @@ public abstract class Node {
     {
         return id;
     }
+    abstract void addSwitch(Node s);
+    abstract void addComputer(Node c);
+    abstract void setParent(Node p);
     abstract void setState();
     abstract void communicate();
 }
