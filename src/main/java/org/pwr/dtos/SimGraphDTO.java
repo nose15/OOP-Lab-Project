@@ -1,24 +1,21 @@
 package org.pwr.dtos;
 
+import org.pwr.simulation.graph.Graph;
 import org.pwr.simulation.graph.Node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SimGraphDTO {
-    private final ArrayList<Node> simNodes;
-    private final Node rootNode;
+    private Map<Node, List<Node>> map;
 
-    public SimGraphDTO(Node rootNode) {
-        this.rootNode = rootNode;
-        this.simNodes = new ArrayList<>();
-        simNodes.add(rootNode);
+    public SimGraphDTO(Graph graph) {
+        this.map = graph.getMap();
     }
 
-    public ArrayList<Node> getSimNodes() {
-        return this.simNodes;
-    }
-
-    public Node getRootNode() {
-        return rootNode;
+    public Map<Node, List<Node>> getSimMap() {
+        return this.map;
     }
 }

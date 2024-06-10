@@ -1,5 +1,6 @@
 package org.pwr.simulation.graph;
 
+import java.security.PublicKey;
 import java.util.*;
 import org.pwr.simulation.graph.Node;
 
@@ -15,6 +16,10 @@ public class Graph {
     {
         map.put(s, new LinkedList<Node>());
         return s;
+    }
+
+    public Map<Node, List<Node>> getMap() {
+        return this.map;
     }
 
     public void addEdge(Node source, Node destination, boolean bidirectional)
@@ -87,18 +92,22 @@ public class Graph {
         }
     }
 
+    public void printHashMap() {
+        System.out.println(map);
+    }
+
     public void graphGeneratorTest()
     {
         int numberOfSwitch = 4;
         int numberOfComputers = 20;
-        addVertex((Node) new Router());
+        addVertex(new Router());
 
         for(int i = 0; i<numberOfSwitch; i++)
         {
-            addEdge(findVertex(0), addAndGetVertex((Node) new Switch()), true);
+            addEdge(findVertex(0), addAndGetVertex(new Switch()), true);
             for(int j = 0; j<numberOfComputers/numberOfSwitch; j++)
             {
-                addEdge(findVertex(i+1), addAndGetVertex((Node) new Computer()), true);
+                addEdge(findVertex(i+1), addAndGetVertex(new Computer()), true);
             }
         }
     }
@@ -115,8 +124,8 @@ public class Graph {
         for(int i = 0; i<numberOfSwitch; i++)
         {
             int take = random.nextInt((Switch.getCounter()-0)+1)+0;
-            addEdge(findVertex(take), addAndGetVertex((Node) new Switch()), true);
-            addEdge(findVertex(Switch.getCounter()), addAndGetVertex((Node) new Computer()), true);
+            addEdge(findVertex(take), addAndGetVertex(new Switch()), true);
+            addEdge(findVertex(Switch.getCounter()), addAndGetVertex(new Computer()), true);
 
             findVertex(take).addSwitch(findVertex(Switch.getCounter()));
             findVertex(Switch.getCounter()).setParent(findVertex(take));
@@ -126,7 +135,7 @@ public class Graph {
         for(int i = 0; i<numberOfComputer-numberOfSwitch; i++)
         {
             int take = random.nextInt((Switch.getCounter()-1)+1)+1;
-            addEdge(findVertex(take), addAndGetVertex((Node) new Computer()), true);
+            addEdge(findVertex(take), addAndGetVertex(new Computer()), true);
 
             findVertex(take).addComputer(findVertex(Computer.getCounter()));
             findVertex(Computer.getCounter()).setParent(findVertex(take));

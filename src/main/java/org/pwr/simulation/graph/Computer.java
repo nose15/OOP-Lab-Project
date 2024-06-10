@@ -11,10 +11,27 @@ public class Computer extends Node {
         super();
         id = --counter;
     }
-    void communicate()
+
+    @Override
+    public void act() {
+
+    }
+
+    public void communicate()
     {
 
     }
+
+    @Override
+    public void hack(float skill) {
+
+    }
+
+    @Override
+    public void heal(float skill) {
+
+    }
+
     static int getCounter()
     {
         return counter;
@@ -35,17 +52,28 @@ public class Computer extends Node {
     {
         parent = p;
     }
-    void addSwitch(Node s)
+    public void addSwitch(Node s)
     {
         return;
     }
-    void addComputer(Node c)
+    public void addComputer(Node c)
     {
         return;
     }
-    void setState()
-    {
 
+    @Override
+    public ArrayList<Node> revealChildren() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Node> revealSwitches() {
+        return null;
+    }
+
+    @Override
+    public Node revealParents() {
+        return null;
     }
 
 }

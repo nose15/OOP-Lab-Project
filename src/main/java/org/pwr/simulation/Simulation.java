@@ -1,13 +1,13 @@
 package org.pwr.simulation;
 
+import org.pwr.simulation.agents.Agent;
+import org.pwr.simulation.graph.Graph;
 import org.pwr.simulation.graph.GraphGenerator;
 import org.pwr.simulation.graph.Node;
 
-import java.security.Timestamp;
-import java.sql.Time;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+
 
 public class Simulation {
     private final SimManagerData simData;
@@ -16,7 +16,8 @@ public class Simulation {
     private long clockStep;
     private long timestampStart;
     private long timestampEnd;
-
+    private ArrayList<Agent> agents;
+    private Graph graph;
 
     //TODO: Node and children
     //TODO: Generate graph
@@ -27,13 +28,18 @@ public class Simulation {
         this.clockStep = this.simData.clockStep;
         this.rootNode = null;
         this.graphGenerator = new GraphGenerator();
+        this.graph = new Graph();
     }
 
     public Node getRootNode() {
         return this.rootNode;
     }
+    public Graph getSimMap() {
+        return graph;
+    }
 
     public void run() {
+        graph.graphGeneratorSimple(10, 40);
         while (true) {
             this.timestampStart = System.currentTimeMillis();
             this.step();
@@ -48,6 +54,6 @@ public class Simulation {
     }
 
     public void step() {
-        System.out.println("Step");
+        graph.printHashMap();
     }
 }
