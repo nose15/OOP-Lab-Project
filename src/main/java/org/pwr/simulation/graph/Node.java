@@ -84,4 +84,10 @@ public abstract class Node {
 
     public abstract void communicate();
     public abstract void setParent(Node parent);
+
+    public void addSwitch(Node vertex) {
+    }
+
+    public void addComputer(Node vertex) {
+    }
 }
