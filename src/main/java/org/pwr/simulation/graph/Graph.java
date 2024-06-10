@@ -58,7 +58,7 @@ public class Graph {
             if (v.getId() == id)
                 return v;
         }
-        return null;
+        throw new IllegalArgumentException("Vertex not found");
     }
 
     public boolean hasVertex(Node s)
@@ -141,9 +141,86 @@ public class Graph {
             findVertex(Computer.getCounter()).setParent(findVertex(take));
         }
     }
-    public void graphGeneratorAdvance(int numberOfSwitch, int numberOfComputer, float switchDeepness, float computerConsistancy)
+    public void graphGeneratorAdvance(int numberOfSwitch, int numberOfComputer, float switchConnectivity, float computerConsistancy)
     {
+        if(numberOfSwitch < 1 || numberOfComputer < 1)
+            throw new IllegalArgumentException("Number of switches and computers must be greater than 0");
+        if(numberOfSwitch > numberOfComputer)
+            throw new IllegalArgumentException("Number of switches must be less than number of computers");
 
+        addVertex((Node) new Router());
+        Random random = new Random();
+
+        List<Switch> endSwitches = new ArrayList<>();
+
+        //Switch generation
+        // First: It take random number from 0 to number of switches
+        // and then add new switch to the graph and connect it to the taken switch/router
+
+        // Second: It take random number from 0 to number of computers witch means number of connection betwen this switch and others
+        // and then by loop of conectivity if random float is less than switchConnectivity it connect to another switch
+        // it take random switch and if its the same switch or already connected it take another one it get skipped
+
+        // Third: If switch has no connections it add it to the endSwitches list
+        // to add computer to it later
+        for(int i = 0; i< numberOfSwitch; i++)
+        {
+            int take = random.nextInt((Switch.getCounter()-0)+1)+0;
+            addEdge(findVertex(take), addAndGetVertex((Node) new Switch()), true);
+
+            findVertex(take).addSwitch(findVertex(Switch.getCounter()));
+            findVertex(Switch.getCounter()).setParent(findVertex(take));
+
+            //Number of other connection to switches
+            int conectivity = random.nextInt((Switch.getCounter()-1)+1)+1;
+
+            for(int j = 0; j<conectivity; j++)
+            {
+                if(random.nextFloat((1.f-0.01f)+1.f)+0.01f <= switchConnectivity)
+                {
+                    int chooseSwitch = random.nextInt((Switch.getCounter()-1)+1)+1;
+                    if(findVertex(take) != findVertex(chooseSwitch) && !findVertex(take).getSwitches().contains(findVertex(chooseSwitch)))
+                    {
+                        addEdge(findVertex(take), findVertex(chooseSwitch), true);
+                        findVertex(chooseSwitch).addSwitch(findVertex(take));
+                        findVertex(take).addSwitch(findVertex(chooseSwitch));
+                    }
+                }
+            }
+
+            if(findVertex(take).getSwitches().isEmpty())
+                endSwitches.add((Switch) findVertex(take));
+        }
+
+        for(int i = 0; i<endSwitches.size(); i++)
+        {
+            if(!endSwitches.get(i).getSwitches().isEmpty())
+            {
+                endSwitches.remove(i);
+                i--;
+                continue;
+            }
+
+            addEdge(endSwitches.get(i), addAndGetVertex((Node) new Computer()), true);
+        }
+
+        for(int i = 0; i<numberOfComputer-endSwitches.size(); i++)
+        {
+            int take = random.nextInt((Switch.getCounter()-1)+1)+1;
+
+            float chance = (random.nextFloat((1.f-0.01f)+1.f)+0.01f)/findVertex(take).getComputers().size();
+
+            if(chance <= computerConsistancy || findVertex(take).getComputers().isEmpty())
+            {
+                addEdge(findVertex(take), addAndGetVertex((Node) new Computer()), true);
+                findVertex(take).addComputer(findVertex(Computer.getCounter()));
+                findVertex(Computer.getCounter()).setParent(findVertex(take));
+            }
+            else
+            {
+                i--;
+            }
+        }
     }
 
 }
