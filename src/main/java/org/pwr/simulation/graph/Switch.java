@@ -30,7 +30,7 @@ public class Switch extends Node {
         return this;
     }
 
-    public ArrayList<Node> getChildren() {
+    public ArrayList<Node> revealChildren() {
         if (this.currentState < this.childrenRevealThreshold) {
             return new ArrayList<>();
         }
