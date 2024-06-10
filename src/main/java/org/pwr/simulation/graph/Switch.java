@@ -5,11 +5,14 @@ import java.util.ArrayList;
 public class Switch extends Node {
     private final float childrenRevealThreshold;
 
+    private static int counter = 0;
     public Switch()
     {
         super();
         this.stateRange = 100;
         this.childrenRevealThreshold = 0.75f * this.stateRange;
+
+        id = ++counter;
     }
 
     public void communicate()
@@ -32,7 +35,6 @@ public class Switch extends Node {
             return new ArrayList<>();
         }
 
-        return
+        return ;
     }
-
 }

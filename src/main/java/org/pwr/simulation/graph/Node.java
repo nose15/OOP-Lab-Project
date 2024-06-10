@@ -5,11 +5,12 @@ import java.util.List;
 
 public abstract class Node {
 
+    protected float currentState;
+    protected final float impactCoeficient;
+    protected int id;
     List<Node> connectedNodes;
     Node parent;
     protected float stateRange;
-    protected float currentState;
-    protected final float impactCoeficient;
     protected float currentImpact;
     protected float hasAgent;
 
@@ -60,7 +61,10 @@ public abstract class Node {
         currentState += 1 * skill;
     }
 
+    public int getId()
+    {
+        return id;
+    }
     public abstract void setState();
     public abstract void communicate();
-
 }
