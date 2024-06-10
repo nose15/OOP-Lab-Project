@@ -22,6 +22,6 @@ public class SimManagerData {
         this.numberOfITExperts = 0;
         this.malwareSpread = false;
         this.numberOfNodes = 0;
-        this.clockStep = 200;
+        this.clockStep = 1000;
     }
 }
