@@ -1,6 +1,7 @@
 package org.pwr.simulation.graph;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public abstract class Node {
@@ -80,6 +81,8 @@ public abstract class Node {
     {
         return id;
     }
+    public abstract ArrayList<Node> getSwitches();
+    public abstract ArrayList<Node> getComputers();
 
     public Node getParents() {
         return parent;
@@ -97,4 +100,5 @@ public abstract class Node {
     public abstract ArrayList<Node> revealSwitches();
 
     public abstract Node revealParents();
+>>>>>>> main
 }

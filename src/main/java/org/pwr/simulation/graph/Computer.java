@@ -40,6 +40,14 @@ public class Computer extends Node {
     {
         return parent;
     }
+    public ArrayList<Node> getSwitches()
+    {
+        return null;
+    }
+    public ArrayList<Node> getComputers()
+    {
+        return null;
+    }
     public void setParent(Node p)
     {
         parent = p;
