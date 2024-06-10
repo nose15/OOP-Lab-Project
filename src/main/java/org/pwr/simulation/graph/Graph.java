@@ -1,5 +1,6 @@
 package org.pwr.simulation.graph;
 
+import java.security.PublicKey;
 import java.util.*;
 import org.pwr.simulation.graph.Node;
 
@@ -15,6 +16,10 @@ public class Graph {
     {
         map.put(s, new LinkedList<Node>());
         return s;
+    }
+
+    public Map<Node, List<Node>> getMap() {
+        return this.map;
     }
 
     public void addEdge(Node source, Node destination, boolean bidirectional)
@@ -85,6 +90,10 @@ public class Graph {
             }
             System.out.println("]");
         }
+    }
+
+    public void printHashMap() {
+        System.out.println(map);
     }
 
     public void graphGeneratorTest()

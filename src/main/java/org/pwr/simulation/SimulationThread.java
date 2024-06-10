@@ -13,7 +13,7 @@ public class SimulationThread extends Thread {
     }
 
     public SimGraphDTO getGraph() {
-        return new SimGraphDTO(this.simulation.getRootNode());
+        return new SimGraphDTO(this.simulation.getSimMap());
     }
 
     @Override

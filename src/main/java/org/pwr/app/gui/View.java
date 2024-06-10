@@ -1,5 +1,9 @@
 package org.pwr.app.gui;
 
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.swingViewer.ViewPanel;
+import org.graphstream.ui.view.Viewer;
 import org.pwr.app.InputManager;
 import org.pwr.app.eventhandling.ButtonActionListener;
 import org.pwr.app.eventhandling.CheckBoxActionListener;
@@ -14,6 +18,8 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 import static org.pwr.app.gui.CustomPanels.*;
@@ -28,6 +34,8 @@ public class View {
     private DefaultListModel<String> mapListModel;
     private BlockingQueue<SimStateDTO> simToGuiQueue;
     private InputManager inputManager;
+    private Graph displayGraph;
+    private Map<Node, List<Node>> map;
 
     public View(BlockingQueue<SimStateDTO> simToGuiQueue, BlockingQueue<ConfigDTO> guiToSimQueue) {
         this.inputManager = new InputManager(guiToSimQueue);
@@ -38,6 +46,7 @@ public class View {
         this.buttonActionListener = new ButtonActionListener(this.inputManager);
 
         this.mapListModel = new DefaultListModel<>();
+        this.displayGraph = new MultiGraph("simMapDisplay");
     }
 
     private JPanel setMainConfPanel() {
@@ -75,10 +84,11 @@ public class View {
 
     private JPanel addMainMapPanel() {
         JPanel mapPanel = new JPanel();
-        mapPanel.setLayout(new GridLayout(1, 1));
-        JList<String> map = new JList<>(this.mapListModel);
-        mapPanel.add(map);
-
+        mapPanel.setLayout(new BorderLayout());
+        Viewer viewer = displayGraph.display(false);
+        ViewPanel viewPanel = viewer.addDefaultView(false);
+        mapPanel.add(viewPanel);
+        viewer.enableAutoLayout();
         return mapPanel;
     }
 
@@ -105,24 +115,25 @@ public class View {
         mainSplitPane.setBottomComponent(rightSplitPane);
 
         currentFrame.add(mainSplitPane, BorderLayout.CENTER);
+        currentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        currentFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        currentFrame.setSize(800,600);
+        currentFrame.setMinimumSize(new Dimension(800, 600));
         return currentFrame;
     }
 
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
-            System.out.println(mapListModel);
-            if (simState.simGraphDTO.getRootNode() != null) {
-                mapListModel.clear();
-                mapListModel.addElement(simState.simGraphDTO.getRootNode().toString());
-            }
+            this.map = simState.simGraphDTO.getSimMap();
+            // TODO: New thread that handles graph display
         });
     }
 
     public void run() {
-        setMainPage();
-        currentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        currentFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        currentFrame.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            setMainPage();
+            currentFrame.setVisible(true);
+        });
 
         ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(2);
         scheduler.scheduleAtFixedRate(() -> {
