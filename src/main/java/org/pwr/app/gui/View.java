@@ -125,7 +125,13 @@ public class View {
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap();
-            // TODO: New thread that handles graph display
+            for (Node key : map.keySet()) {
+                if (this.displayGraph.getNode(String.valueOf(key)) == null) this.displayGraph.addNode(String.valueOf(key));
+                for (Node a : map.get(key)) {
+                    if (this.displayGraph.getNode(String.valueOf(a)) == null) this.displayGraph.addNode(String.valueOf(a));
+                    if (this.displayGraph.getEdge(key + String.valueOf(a)) == null) this.displayGraph.addEdge(key + String.valueOf(a), String.valueOf(key), String.valueOf(a));
+                }
+            }
         });
     }
 
