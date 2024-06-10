@@ -75,7 +75,7 @@ public class Graph {
     {
         for (Node v : map.keySet())
         {
-            System.out.println(v + " -> " + map.get(v));
+            //System.out.println(v + " -> " + map.get(v));
             System.out.print(v.getId() + " -> [");
             for (Node n : map.get(v))
             {
@@ -87,7 +87,7 @@ public class Graph {
         }
     }
 
-    public void simpleGraphGenerator()
+    public void graphGeneratorTest()
     {
         int numberOfSwitch = 4;
         int numberOfComputers = 20;
@@ -102,4 +102,39 @@ public class Graph {
             }
         }
     }
+    public void graphGeneratorSimple(int numberOfSwitch, int numberOfComputer)
+    {
+        if(numberOfSwitch < 1 || numberOfComputer < 1)
+            throw new IllegalArgumentException("Number of switches and computers must be greater than 0");
+        if(numberOfSwitch > numberOfComputer)
+            throw new IllegalArgumentException("Number of switches must be less than number of computers");
+
+        addVertex((Node) new Router());
+        Random random = new Random();
+
+        for(int i = 0; i<numberOfSwitch; i++)
+        {
+            int take = random.nextInt((Switch.getCounter()-0)+1)+0;
+            addEdge(findVertex(take), addAndGetVertex((Node) new Switch()), true);
+            addEdge(findVertex(Switch.getCounter()), addAndGetVertex((Node) new Computer()), true);
+
+            findVertex(take).addSwitch(findVertex(Switch.getCounter()));
+            findVertex(Switch.getCounter()).setParent(findVertex(take));
+            findVertex(Switch.getCounter()).addComputer(findVertex(Computer.getCounter()));
+            findVertex(Computer.getCounter()).setParent(findVertex(Switch.getCounter()));
+        }
+        for(int i = 0; i<numberOfComputer-numberOfSwitch; i++)
+        {
+            int take = random.nextInt((Switch.getCounter()-1)+1)+1;
+            addEdge(findVertex(take), addAndGetVertex((Node) new Computer()), true);
+
+            findVertex(take).addComputer(findVertex(Computer.getCounter()));
+            findVertex(Computer.getCounter()).setParent(findVertex(take));
+        }
+    }
+    public void graphGeneratorAdvance(int numberOfSwitch, int numberOfComputer, float switchDeepness, float computerConsistancy)
+    {
+
+    }
+
 }

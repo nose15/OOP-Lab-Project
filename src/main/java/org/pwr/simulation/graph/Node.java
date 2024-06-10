@@ -82,7 +82,9 @@ public abstract class Node {
         return id;
     }
 
-
-    public abstract void setState();
     public abstract void communicate();
+    public abstract void setParent(Node parent);
+
+    public abstract void addSwitch(Node s);
+    public abstract void addComputer(Node computer);
 }

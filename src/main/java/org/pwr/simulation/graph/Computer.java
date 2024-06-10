@@ -3,6 +3,7 @@ package org.pwr.simulation.graph;
 public class Computer extends Node {
 
     private static int counter = 0;
+    private Node parent;
     public Computer()
     {
         super();
@@ -29,9 +30,25 @@ public class Computer extends Node {
 
     }
 
-    public void setState()
+    static int getCounter()
     {
-
+        return counter;
+    }
+    public Node getParent()
+    {
+        return parent;
+    }
+    public void setParent(Node p)
+    {
+        parent = p;
+    }
+    public void addSwitch(Node s)
+    {
+        return;
+    }
+    public void addComputer(Node c)
+    {
+        return;
     }
 
 }
