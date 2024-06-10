@@ -6,10 +6,27 @@ public class Computer extends Node {
     {
         super();
     }
+
+    @Override
+    public void act() {
+
+    }
+
     public void communicate()
     {
 
     }
+
+    @Override
+    public void hack(float skill) {
+
+    }
+
+    @Override
+    public void heal(float skill) {
+
+    }
+
     public void setState()
     {
 

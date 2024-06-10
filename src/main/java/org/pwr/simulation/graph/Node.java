@@ -7,12 +7,16 @@ public abstract class Node {
 
     List<Node> connectedNodes;
     Node parent;
-    private float currentState;
-    private float impactCoeficient;
+    protected float stateRange;
+    protected float currentState;
+    protected final float impactCoeficient;
+    protected float currentImpact;
+    protected float hasAgent;
 
     public Node()
     {
         connectedNodes = new ArrayList<>();
+        this.impactCoeficient = 2;
     }
     public void addConnection(Node node)
     {
@@ -31,9 +35,32 @@ public abstract class Node {
         return currentState;
     }
 
-    public abstract void act();
+    public void act() {
+        if (currentState > 0.75 * stateRange) {
+            currentImpact = impactCoeficient;
+        }
+        else if (currentState <= 0.75 * stateRange && 0.5 * stateRange <= currentState) {
+            currentImpact = 0.5f * impactCoeficient;
+        }
+        else if (currentState >= -0.75 * stateRange && -0.5 * stateRange >= currentState) {
+            currentImpact = -0.5f * impactCoeficient;
+        }
+        else {
+            currentImpact = -impactCoeficient;
+        }
+
+        communicate();
+    }
+
+    public void hack(float skill) {
+        currentState -= 1 * skill;
+    }
+
+    public void heal(float skill) {
+        currentState += 1 * skill;
+    }
+
     public abstract void setState();
     public abstract void communicate();
-    public abstract void hack(float skill);
-    public abstract void heal(float skill);
+
 }

@@ -4,11 +4,8 @@ import org.pwr.simulation.agents.Agent;
 import org.pwr.simulation.graph.GraphGenerator;
 import org.pwr.simulation.graph.Node;
 
-import java.security.Timestamp;
-import java.sql.Time;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+
 
 public class Simulation {
     private final SimManagerData simData;
