@@ -1,25 +1,26 @@
 package org.pwr.simulation.agents;
 
-import org.pwr.simulation.graph.Computer;
 import org.pwr.simulation.graph.Node;
-import org.pwr.simulation.graph.Router;
-import org.pwr.simulation.graph.Switch;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 
 public class ITSpec extends Agent {
     public static Queue<Node> callsForHelp;
-    private Queue<Boolean> initiative;
+    private final Queue<Boolean> initiative;
+    private final float baseCallForHelpCooldown;
+    private final float targetHealingThreshold;
+    private float callForHelpCooldown;
+
     private float prevTargetState;
-    private float callForHelpCooldown = 10;
-    private final float healingThreshold = 0.75f;
 
     public ITSpec(float skill) {
         this.skill = skill;
         this.initiative = new LinkedList<>();
+        this.targetHealingThreshold = 0.75f;
+        this.baseCallForHelpCooldown = 10;
+        this.callForHelpCooldown = this.baseCallForHelpCooldown;
         initiative.add(true);
     }
 
@@ -30,14 +31,12 @@ public class ITSpec extends Agent {
         initiative.add(targetState >= prevTargetState);
 
         if (!initiative.contains(true)) {
-            System.out.println(this + " has lost initiative");
             this.callForHelp();
         }
     }
 
     @Override
     public void act() {
-        System.out.println(this + " is acting");
         this.location.heal(this.skill);
         float targetState = this.location.getState();
 
@@ -46,7 +45,7 @@ public class ITSpec extends Agent {
         prevTargetState = targetState;
 
 
-        if (targetState >= healingThreshold) {
+        if (targetState >= targetHealingThreshold) {
             this.moveFurther();
             return;
         }
@@ -55,64 +54,45 @@ public class ITSpec extends Agent {
     }
 
     protected void moveFurther() {
-        System.out.println(this + " is moving further");
-
         if (!callsForHelp.isEmpty()) {
             move(callsForHelp.remove());
         }
 
-        if (this.location.getClass() == Switch.class) {
-            Switch switchObj = (Switch) this.location;
-            ArrayList<Node> targets = switchObj.getComputers();
-
-            for (Node computer : targets) {
-                if (computer.getState() < this.healingThreshold) {
-                    this.move(computer);
-                    return;
-                }
-            }
-
-            targets = switchObj.getSwitches();
-
-            for (Node s : targets) {
-                if (s.getState() < this.healingThreshold) {
-                    this.move(s);
-                    return;
-                }
-            }
-
-            if (switchObj.getParents() != null) {
-                this.move(switchObj.getParents());
-                return;
-            }
-
-            this.move(switchObj.getParents());
+        ArrayList<Node> computers = this.location.getComputers();
+        Node target = this.searchForTarget(computers);
+        if (target != null) {
+            this.move(target);
+            return;
         }
 
-        if (this.location.getClass() == Computer.class) {
+        ArrayList<Node> switches = this.location.getSwitches();
+        target = this.searchForTarget(switches);
+        if (target != null) {
+            this.move(target);
+            return;
+        }
+
+        if (this.location.getParents() != null) {
             this.move(this.location.getParents());
         }
+    }
 
-        if (this.location.getClass() == Router.class) {
-            Router routerObj = (Router) this.location;
-
-            ArrayList<Node> targets = routerObj.getSwitches();
-
-            for (Node s : targets) {
-                if (s.getState() < this.healingThreshold) {
-                    this.move(s);
-                    return;
+    private Node searchForTarget(ArrayList<Node> nodes) {
+        if (nodes != null) {
+            for (Node node : nodes) {
+                if (node.getState() < this.targetHealingThreshold) {
+                    return node;
                 }
             }
-
-            this.move(targets.get(new Random().nextInt(targets.size())));
         }
+
+        return null;
     }
 
     public void callForHelp() {
         if (callForHelpCooldown == 0) {
             callsForHelp.add(location);
-            callForHelpCooldown = 10;
+            this.callForHelpCooldown = this.baseCallForHelpCooldown;
         }
     }
 }

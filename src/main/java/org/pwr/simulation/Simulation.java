@@ -11,39 +11,44 @@ import java.util.*;
 
 public class Simulation {
     private final SimManagerData simData;
-    private Node rootNode;
-    private long clockStep;
-    private long timestampStart;
-    private long timestampEnd;
-    private ArrayList<Agent> agents;
-    private Graph graph;
-
-    //TODO: Node and children
-    //TODO: Generate graph
-    //TODO: Agent fundaments
+    private final long clockStep;
+    private final ArrayList<Agent> agents;
+    private final Graph graph;
 
     public Simulation(SimManagerData simManagerData) {
         this.simData = simManagerData;
         this.clockStep = this.simData.clockStep;
-        this.rootNode = null;
         this.graph = new Graph();
         this.agents = new ArrayList<>();
-    }
-
-    public Node getRootNode() {
-        return this.rootNode;
     }
     public Graph getSimMap() {
         return graph;
     }
 
     public void run() {
-        Random random = new Random();
-
         ITSpec.callsForHelp = new LinkedList<>();
         Hacker.knownNodes = new HashSet<>();
 
         graph.graphGeneratorSimple(5, simData.numberOfNodes);
+        initAgents();
+
+
+        while (true) {
+            long timestampStart = System.currentTimeMillis();
+            this.step();
+            long timestampEnd = System.currentTimeMillis();
+
+            try {
+                Thread.sleep(clockStep - timestampEnd + timestampStart);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void initAgents() {
+        Random random = new Random();
+
         Node router = graph.findVertex(0);
         for (int i = 0; i < simData.numberOfITExperts; i++) {
             ITSpec itSpec = new ITSpec((float) random.nextGaussian(simData.avgItSkills * 0.001, 0.001f) );
@@ -59,19 +64,6 @@ public class Simulation {
             hacker.setLocation(location);
             location.add(hacker);
             agents.add(hacker);
-        }
-
-
-        while (true) {
-            this.timestampStart = System.currentTimeMillis();
-            this.step();
-            this.timestampEnd = System.currentTimeMillis();
-
-            try {
-                Thread.sleep(clockStep - timestampEnd + timestampStart);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
