@@ -60,9 +60,9 @@ public class View {
         confPanel.add(createSpinnerInputPanel("Liczba pracowników", 0, 1000, spinnerChangeListener, "setNumberOfNodes"));
         confPanel.add(createSliderInputPanel("Kompetencje Informatyków", 0, 100, sliderChangeListener, "setAvgItSkills"));
         confPanel.add(createSliderInputPanel("Kompetencje Hakerów", 0, 100, sliderChangeListener, "setAvgHackerSkills"));
-//        confPanel.add(createSpinnerInputPanel("Tempo utraty odporności", 0, 100, spinnerChangeListener, "setResistanceLossPace"));
-//        confPanel.add(createCheckBoxInputPanel("Rozprzestrzenianie się Malwaru", checkBoxActionListener, "setMalwareSpread"));
-//        confPanel.add(createSpinnerInputPanel("Tempo rozprzestrzeniania się malwaru", 0, 100, spinnerChangeListener, "setMalwareSpreadPace"));
+        confPanel.add(createSpinnerInputPanel("Tempo utraty odporności", 0, 100, spinnerChangeListener, "setResistanceLossPace"));
+        confPanel.add(createCheckBoxInputPanel("Rozprzestrzenianie się Malwaru", checkBoxActionListener, "setMalwareSpread"));
+        confPanel.add(createSpinnerInputPanel("Tempo rozprzestrzeniania się malwaru", 0, 100, spinnerChangeListener, "setMalwareSpreadPace"));
         confPanel.add(createButtonPanel("Start", this.buttonActionListener, "start"));
 
         return confPanel;
@@ -99,7 +99,7 @@ public class View {
         return statsPanel;
     }
 
-    private JFrame setMainPage() {
+    private void setMainPage() {
         this.currentFrame = new JFrame("Symulacja Ataku Hakerskiego");
 
         Border border = BorderFactory.createMatteBorder(5, 5, 5, 5, Color.gray);
@@ -119,9 +119,9 @@ public class View {
         currentFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentFrame.setSize(800,600);
         currentFrame.setMinimumSize(new Dimension(800, 600));
-        return currentFrame;
     }
 
+    //TODO: Clean up styling because the amount of spaghetti here is scary
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap();
@@ -224,12 +224,6 @@ public class View {
 
                     this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                 }
-//                    if (key.hasHacker()) {
-//
-//                    }
-//                    if (key.hasITSpec()) {
-//
-//                    }
             }
         });
     }
