@@ -26,12 +26,7 @@ public class Simulation {
     }
 
     public void run() {
-        ITSpec.callsForHelp = new LinkedList<>();
-        Hacker.knownNodes = new HashSet<>();
-
-        graph.graphGeneratorSimple(5, simData.numberOfNodes);
-        initAgents();
-
+        this.initSim();
 
         while (true) {
             long timestampStart = System.currentTimeMillis();
@@ -44,6 +39,14 @@ public class Simulation {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private void initSim() {
+        ITSpec.callsForHelp = new LinkedList<>();
+        Hacker.knownNodes = new HashSet<>();
+
+        graph.graphGeneratorSimple(5, simData.numberOfNodes);
+        initAgents();
     }
 
     private void initAgents() {
