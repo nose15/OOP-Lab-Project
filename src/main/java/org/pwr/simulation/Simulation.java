@@ -2,7 +2,6 @@ package org.pwr.simulation;
 
 import org.pwr.simulation.agents.Agent;
 import org.pwr.simulation.graph.Graph;
-import org.pwr.simulation.graph.GraphGenerator;
 import org.pwr.simulation.graph.Node;
 
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.HashMap;
 public class Simulation {
     private final SimManagerData simData;
     private Node rootNode;
-    private final GraphGenerator graphGenerator;
     private long clockStep;
     private long timestampStart;
     private long timestampEnd;
@@ -27,7 +25,6 @@ public class Simulation {
         this.simData = simManagerData;
         this.clockStep = this.simData.clockStep;
         this.rootNode = null;
-        this.graphGenerator = new GraphGenerator();
         this.graph = new Graph();
     }
 
@@ -39,7 +36,8 @@ public class Simulation {
     }
 
     public void run() {
-        graph.graphGeneratorSimple(10, 40);
+        //graph.graphGeneratorSimple(10, 30);
+        graph.graphGeneratorAdvance(20, 35, 0.8f, 0.6f);
         while (true) {
             this.timestampStart = System.currentTimeMillis();
             this.step();

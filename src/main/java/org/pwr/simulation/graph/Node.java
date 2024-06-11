@@ -100,5 +100,5 @@ public abstract class Node {
     public abstract ArrayList<Node> revealSwitches();
 
     public abstract Node revealParents();
->>>>>>> main
+
 }

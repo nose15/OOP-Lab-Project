@@ -125,13 +125,45 @@ public class View {
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap();
+
+            displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
+
             for (Node key : map.keySet()) {
-                if (this.displayGraph.getNode(String.valueOf(key)) == null) this.displayGraph.addNode(String.valueOf(key));
+                if (this.displayGraph.getNode(String.valueOf(key)) == null) {
+                    this.displayGraph.addNode(String.valueOf(key));
+                    if(key.getId()>0)
+                    {
+                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                "fill-mode: plain; " +
+                                        "fill-color: blue; " +
+                                        "size: 30px;" +
+                                        "shape: circle;");
+                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label", "Switch " + key.getId());
+                    }
+                }
                 for (Node a : map.get(key)) {
                     if (this.displayGraph.getNode(String.valueOf(a)) == null) this.displayGraph.addNode(String.valueOf(a));
                     if (this.displayGraph.getEdge(key + String.valueOf(a)) == null) this.displayGraph.addEdge(key + String.valueOf(a), String.valueOf(key), String.valueOf(a));
+                    if(key.getId()>0)
+                    {    this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                            "fill-mode: plain; " +
+                                    "fill-color: blue; " +
+                                    "size: 30px;" +
+                                    "shape: circle; ");
+                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label", "Switch " + key.getId());
+                    }
                 }
             }
+
+                this.displayGraph.getNode(String.valueOf(org.pwr.simulation.graph.Graph.findVertex(map, 0)))
+                        .addAttribute("ui.style",
+                                "shape: circle; " +
+                                        "fill-color: red;" +
+                                        "size: 50px;"
+                                       );
+                this.displayGraph.getNode(String.valueOf(org.pwr.simulation.graph.Graph.findVertex(map, 0))).setAttribute("ui.label", "Router");
+                //this.displayGraph.getNode(String.valueOf(org.pwr.simulation.graph.Graph.findVertex(map, 0))).addAttribute("xy", -2000, 500);
+
         });
     }
 
