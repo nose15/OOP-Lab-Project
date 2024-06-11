@@ -6,6 +6,7 @@ import org.pwr.simulation.graph.Router;
 import org.pwr.simulation.graph.Switch;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
@@ -16,19 +17,27 @@ public class ITSpec extends Agent {
     private float callForHelpCooldown = 10;
     private final float healingThreshold = 0.75f;
 
+    public ITSpec(float skill) {
+        this.skill = skill;
+        this.initiative = new LinkedList<>();
+        initiative.add(true);
+    }
+
     private void checkInitiative(float targetState) {
         if (initiative.size() > 2) {
             initiative.remove();
         }
-        initiative.add(targetState > prevTargetState);
+        initiative.add(targetState >= prevTargetState);
 
         if (!initiative.contains(true)) {
+            System.out.println(this + " has lost initiative");
             this.callForHelp();
         }
     }
 
     @Override
     public void act() {
+        System.out.println(this + " is acting");
         this.location.heal(this.skill);
         float targetState = this.location.getState();
 
@@ -37,7 +46,7 @@ public class ITSpec extends Agent {
         prevTargetState = targetState;
 
 
-        if (targetState > healingThreshold) {
+        if (targetState >= healingThreshold) {
             this.moveFurther();
             return;
         }
@@ -46,6 +55,8 @@ public class ITSpec extends Agent {
     }
 
     protected void moveFurther() {
+        System.out.println(this + " is moving further");
+
         if (!callsForHelp.isEmpty()) {
             move(callsForHelp.remove());
         }
@@ -75,7 +86,7 @@ public class ITSpec extends Agent {
                 return;
             }
 
-            this.move(targets.get(new Random().nextInt(targets.size())));
+            this.move(switchObj.getParents());
         }
 
         if (this.location.getClass() == Computer.class) {

@@ -2,30 +2,27 @@ package org.pwr.simulation.graph;
 
 import java.util.ArrayList;
 
-public class Router extends Node{
+public class Router extends Node {
     private final ArrayList<Node> switches = new ArrayList<>();
 
-    public Router()
-    {
+    public Router() {
         super();
-        id = 0;
+        this.id = 0;
     }
 
-    public void addSwitch(Node s)
-    {
+    public void addSwitch(Node s) {
         switches.add(s);
     }
-    public ArrayList<Node> getSwitches()
-    {
+
+    public ArrayList<Node> getSwitches() {
         return switches;
     }
-    public ArrayList<Node> getComputers()
-    {
+
+    public ArrayList<Node> getComputers() {
         return null;
     }
-    public void addComputer(Node c)
-    {
-        return;
+
+    public void addComputer(Node c) {
     }
 
     @Override
@@ -43,16 +40,14 @@ public class Router extends Node{
         return null;
     }
 
-    public void setParent(Node p)
-    {
-        return;
+    public void setParent(Node p) {
     }
-    void setState()
-    {
+
+    void setState() {
 
     }
-    public void communicate()
-    {
+
+    public void communicate() {
 
     }
 }

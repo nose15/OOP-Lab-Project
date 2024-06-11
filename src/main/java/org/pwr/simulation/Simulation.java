@@ -1,11 +1,12 @@
 package org.pwr.simulation;
 
 import org.pwr.simulation.agents.Agent;
+import org.pwr.simulation.agents.Hacker;
+import org.pwr.simulation.agents.ITSpec;
 import org.pwr.simulation.graph.Graph;
 import org.pwr.simulation.graph.Node;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 
 public class Simulation {
@@ -26,6 +27,7 @@ public class Simulation {
         this.clockStep = this.simData.clockStep;
         this.rootNode = null;
         this.graph = new Graph();
+        this.agents = new ArrayList<>();
     }
 
     public Node getRootNode() {
@@ -36,8 +38,30 @@ public class Simulation {
     }
 
     public void run() {
-        //graph.graphGeneratorSimple(10, 30);
-        graph.graphGeneratorAdvance(20, 35, 0.8f, 0.6f);
+        Random random = new Random();
+
+        ITSpec.callsForHelp = new LinkedList<>();
+        Hacker.knownNodes = new HashSet<>();
+
+        graph.graphGeneratorSimple(5, simData.numberOfNodes);
+        Node router = graph.findVertex(0);
+        for (int i = 0; i < simData.numberOfITExperts; i++) {
+            ITSpec itSpec = new ITSpec((float) random.nextGaussian(simData.avgItSkills * 0.001, 0.001f) );
+            itSpec.setLocation(router);
+            router.add(itSpec);
+            agents.add(itSpec);
+        }
+
+
+        for (int i = 0; i < simData.numberOfHackers; i++) {
+            Hacker hacker = new Hacker((float) random.nextGaussian(simData.avgHackerSkills * 0.001, 0.001f));
+            Node location = graph.findVertex(-random.nextInt(simData.numberOfNodes));
+            hacker.setLocation(location);
+            location.add(hacker);
+            agents.add(hacker);
+        }
+
+
         while (true) {
             this.timestampStart = System.currentTimeMillis();
             this.step();
@@ -52,6 +76,16 @@ public class Simulation {
     }
 
     public void step() {
-        graph.printHashMap();
+        for (Agent agent : agents) {
+            agent.act();
+        }
+
+        for (Node node : graph.getMap().keySet()) {
+            node.act();
+
+            for (Node n : graph.getMap().get(node)) {
+                n.act();
+            }
+        }
     }
 }

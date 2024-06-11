@@ -6,7 +6,6 @@ import java.util.*;
 
 public abstract class Agent {
     protected AgentState agentState;
-    protected static Set<Node> knownNodes;
     protected float skill;
     protected Node location;
     protected boolean done;
@@ -23,7 +22,9 @@ public abstract class Agent {
     }
 
     protected void move(Node target) {
+        this.location.subtract(this);
         this.location = target;
+        target.add(this);
         resetProgress();
     }
 
@@ -31,7 +32,12 @@ public abstract class Agent {
         this.turnsCount = 0;
         this.prevTargetState = 0;
         this.initiative.clear();
+        initiative.add(true);
     }
 
     public abstract void act();
+
+    public void setLocation(Node location) {
+        this.location = location;
+    }
 }

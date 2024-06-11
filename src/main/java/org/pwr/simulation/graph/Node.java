@@ -1,5 +1,9 @@
 package org.pwr.simulation.graph;
 
+import org.pwr.simulation.agents.Agent;
+import org.pwr.simulation.agents.Hacker;
+import org.pwr.simulation.agents.ITSpec;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,9 +19,13 @@ public abstract class Node {
     Node parent;
     protected float stateRange;
     protected float currentImpact;
+    protected int numOfIt;
+    protected int numOfHackers;
 
     public Node()
     {
+        this.numOfIt = 0;
+        this.numOfHackers = 0;
         connectedNodes = new ArrayList<>();
         this.impactCoeficient = 2;
         this.balancingPace = 0.01f;
@@ -40,16 +48,21 @@ public abstract class Node {
     }
 
     public void act() {
-        setImpactCoeficient();
-        communicate();
-        approachBalance();
+        if (currentState > 1) currentState = 1;
+        if (currentState < -1) currentState = -1;
+
+//        setImpactCoeficient();
+//        communicate();
+//        approachBalance();
     }
 
     public void hack(float skill) {
+        System.out.println("Node " + this + " being hacked by " + skill);
         currentState -= 1 * skill;
     }
 
     public void heal(float skill) {
+        System.out.println("Node " + this + " being healed by " + skill);
         currentState += 1 * skill;
     }
 
@@ -101,4 +114,21 @@ public abstract class Node {
 
     public abstract Node revealParents();
 
+    public int getNumOfHackers() {
+        return this.numOfHackers;
+    }
+
+    public int getNumOfIT() {
+        return this.numOfIt;
+    }
+
+    public void subtract(Agent agent) {
+        if (agent.getClass() == Hacker.class) this.numOfHackers -= 1;
+        if (agent.getClass() == ITSpec.class) this.numOfIt -= 1;
+    }
+
+    public void add(Agent agent) {
+        if (agent.getClass() == Hacker.class) this.numOfHackers += 1;
+        else if (agent.getClass() == ITSpec.class) this.numOfIt += 1;
+    }
 }

@@ -68,7 +68,7 @@ public class Graph {
             if (v.getId() == id)
                 return v;
         }
-        throw new IllegalArgumentException("Vertex not found");
+       return null;
     }
 
     public boolean hasVertex(Node s)
