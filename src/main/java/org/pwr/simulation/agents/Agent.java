@@ -12,9 +12,9 @@ public abstract class Agent {
     protected final Queue<Boolean> initiative = new LinkedList<>();
 
     protected void move(Node target) {
-        this.location.subtract(this);
+        this.location.removeAgent(this);
         this.location = target;
-        target.add(this);
+        target.addAgent(this);
         resetProgress();
     }
 

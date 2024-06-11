@@ -53,7 +53,7 @@ public class Simulation {
         for (int i = 0; i < simData.numberOfITExperts; i++) {
             ITSpec itSpec = new ITSpec((float) random.nextGaussian(simData.avgItSkills * 0.001, 0.001f) );
             itSpec.setLocation(router);
-            router.add(itSpec);
+            router.addAgent(itSpec);
             agents.add(itSpec);
         }
 
@@ -62,7 +62,7 @@ public class Simulation {
             Hacker hacker = new Hacker((float) random.nextGaussian(simData.avgHackerSkills * 0.001, 0.001f));
             Node location = graph.findVertex(-random.nextInt(simData.numberOfNodes));
             hacker.setLocation(location);
-            location.add(hacker);
+            location.addAgent(hacker);
             agents.add(hacker);
         }
     }
