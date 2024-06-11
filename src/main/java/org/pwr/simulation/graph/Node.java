@@ -39,9 +39,9 @@ public abstract class Node {
         if (currentState > 1) currentState = 1;
         if (currentState < -1) currentState = -1;
 
-        setImpactCoeficient();
-        communicate();
-        approachBalance();
+//        setImpactCoeficient();
+//        communicate();
+//        approachBalance();
     }
 
     public void hack(float skill) {
