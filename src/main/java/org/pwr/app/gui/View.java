@@ -99,7 +99,7 @@ public class View {
         return statsPanel;
     }
 
-    private JFrame setMainPage() {
+    private void setMainPage() {
         this.currentFrame = new JFrame("Symulacja Ataku Hakerskiego");
 
         Border border = BorderFactory.createMatteBorder(5, 5, 5, 5, Color.gray);
@@ -119,17 +119,110 @@ public class View {
         currentFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         currentFrame.setSize(800,600);
         currentFrame.setMinimumSize(new Dimension(800, 600));
-        return currentFrame;
     }
 
+    //TODO: Clean up styling because the amount of spaghetti here is scary
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap();
+
+            displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
+
             for (Node key : map.keySet()) {
-                if (this.displayGraph.getNode(String.valueOf(key)) == null) this.displayGraph.addNode(String.valueOf(key));
+                if (this.displayGraph.getNode(String.valueOf(key)) == null) {
+                    this.displayGraph.addNode(String.valueOf(key));
+                    if(key.getId()>0)
+                    {
+                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                "fill-mode: plain; " +
+                                        "fill-color: blue; " +
+                                        "size: 30px;" +
+                                        "shape: circle;");
+                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label", "Switch " + key.getId());
+                    }
+                }
                 for (Node a : map.get(key)) {
                     if (this.displayGraph.getNode(String.valueOf(a)) == null) this.displayGraph.addNode(String.valueOf(a));
                     if (this.displayGraph.getEdge(key + String.valueOf(a)) == null) this.displayGraph.addEdge(key + String.valueOf(a), String.valueOf(key), String.valueOf(a));
+                    if(key.getId()>0)
+                    {
+                        if (key.getState() > 0) {
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                    "fill-mode: plain; " +
+                                            "fill-color: green;" +
+                                            "size: 30px;" +
+                                            "shape: circle; ");
+                        }
+                        else if (key.getState() < 0) {
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                    "fill-mode: plain; " +
+                                            "fill-color: red;" +
+                                            "size: 30px;" +
+                                            "shape: circle; ");
+                        }
+                        else {
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                    "fill-mode: plain; " +
+                                            "fill-color: blue;" +
+                                            "size: 30px;" +
+                                            "shape: circle; ");
+                        }
+                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
+                    }
+
+                    if(key.getId()<0)
+                    {
+                        if (key.getState() > 0) {
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                    "fill-mode: plain; " +
+                                            "fill-color: green;" +
+                                            "size: 10px;" +
+                                            "shape: circle; ");
+                        }
+                        else if (key.getState() < 0) {
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                    "fill-mode: plain; " +
+                                            "fill-color: red;" +
+                                            "size: 10px;" +
+                                            "shape: circle; ");
+                        }
+                        else {
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                    "fill-mode: plain; " +
+                                            "fill-color: blue;" +
+                                            "size: 10px;" +
+                                            "shape: circle; ");
+                        }
+                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
+                    }
+
+                    if(key.getId() == 0)
+                    {
+                        if (key.getState() > 0) {
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                    "fill-mode: plain; " +
+                                            "fill-color: green;" +
+                                            "size: 50px;" +
+                                            "shape: circle; ");
+                        }
+                        else if (key.getState() < 0) {
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                    "fill-mode: plain; " +
+                                            "fill-color: red;" +
+                                            "size: 50px;" +
+                                            "shape: circle; ");
+                        }
+                        else {
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
+                                    "fill-mode: plain; " +
+                                            "fill-color: blue;" +
+                                            "size: 50px;" +
+                                            "shape: circle; ");
+                        }
+                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
+                    }
+
+                    this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                 }
             }
         });

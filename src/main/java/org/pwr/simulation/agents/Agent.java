@@ -5,25 +5,16 @@ import org.pwr.simulation.graph.Node;
 import java.util.*;
 
 public abstract class Agent {
-    protected AgentState agentState;
-    protected static Set<Node> knownNodes;
     protected float skill;
     protected Node location;
-    protected boolean done;
     protected int turnsCount;
     protected float prevTargetState;
     protected final Queue<Boolean> initiative = new LinkedList<>();
 
-    public Node getLocation() {
-        return this.location;
-    }
-
-    public float getSkill() {
-        return this.skill;
-    }
-
     protected void move(Node target) {
+        this.location.removeAgent(this);
         this.location = target;
+        target.addAgent(this);
         resetProgress();
     }
 
@@ -31,7 +22,12 @@ public abstract class Agent {
         this.turnsCount = 0;
         this.prevTargetState = 0;
         this.initiative.clear();
+        initiative.add(true);
     }
 
     public abstract void act();
+
+    public void setLocation(Node location) {
+        this.location = location;
+    }
 }

@@ -4,7 +4,6 @@ import org.pwr.app.gui.View;
 import org.pwr.dtos.ConfigDTO;
 import org.pwr.dtos.SimStateDTO;
 import org.pwr.simulation.SimulationManager;
-import org.pwr.simulation.graph.*;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

@@ -61,6 +61,16 @@ public class Graph {
         throw new IllegalArgumentException("Vertex not found");
     }
 
+    static public Node findVertex(Map<Node, List<Node>> map, int id)
+    {
+        for (Node v : map.keySet())
+        {
+            if (v.getId() == id)
+                return v;
+        }
+       return null;
+    }
+
     public boolean hasVertex(Node s)
     {
         return map.containsKey(s);

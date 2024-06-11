@@ -1,18 +1,20 @@
 package org.pwr.simulation.agents;
 
 import org.pwr.simulation.graph.Node;
-import org.pwr.simulation.graph.Switch;
 
 import java.util.*;
 
 public class Hacker extends Agent {
 
     private final float targetHackedThreshold;
+    public static Set<Node> knownNodes;
+
 
     public Hacker(float skill) {
         super();
         this.skill = skill;
-        this.targetHackedThreshold = 0.75f;
+        this.targetHackedThreshold = -0.75f; //TODO: Make it a simulation parameter, the same for ITSpec
+        this.initiative.add(true);
     }
 
 
@@ -22,11 +24,7 @@ public class Hacker extends Agent {
         }
         initiative.add(targetState > prevTargetState);
 
-        if (!initiative.contains(true) && initiative.size() > 2) {
-            return true;
-        }
-
-        return false;
+        return  (!initiative.contains(false) && initiative.size() > 2);
     }
 
     @Override
@@ -36,12 +34,14 @@ public class Hacker extends Agent {
         this.location.hack(this.skill);
         float targetState = this.location.getState();
 
-        if (targetState > targetHackedThreshold) {
+        if (targetState < targetHackedThreshold) {
             this.moveFurther();
+            return;
         }
 
         if (checkRepelled(targetState)) {
             this.moveRandom();
+            return;
         }
 
         this.prevTargetState = targetState;
@@ -49,8 +49,6 @@ public class Hacker extends Agent {
     }
 
     protected void moveFurther() {
-        this.resetProgress();
-
         Node parent;
         parent = this.location.revealParents();
 
@@ -103,7 +101,8 @@ public class Hacker extends Agent {
             i++;
         }
 
-        resetProgress();
-        this.location = newLocation;
+        if (newLocation != null) {
+            this.move(newLocation);
+        }
     }
 }

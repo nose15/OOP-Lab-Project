@@ -1,49 +1,37 @@
 package org.pwr.simulation;
 
 import org.pwr.simulation.agents.Agent;
+import org.pwr.simulation.agents.Hacker;
+import org.pwr.simulation.agents.ITSpec;
 import org.pwr.simulation.graph.Graph;
-import org.pwr.simulation.graph.GraphGenerator;
 import org.pwr.simulation.graph.Node;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 
 public class Simulation {
     private final SimManagerData simData;
-    private Node rootNode;
-    private final GraphGenerator graphGenerator;
-    private long clockStep;
-    private long timestampStart;
-    private long timestampEnd;
-    private ArrayList<Agent> agents;
-    private Graph graph;
-
-    //TODO: Node and children
-    //TODO: Generate graph
-    //TODO: Agent fundaments
+    private final long clockStep;
+    private final ArrayList<Agent> agents;
+    private final Graph graph;
 
     public Simulation(SimManagerData simManagerData) {
         this.simData = simManagerData;
         this.clockStep = this.simData.clockStep;
-        this.rootNode = null;
-        this.graphGenerator = new GraphGenerator();
         this.graph = new Graph();
-    }
-
-    public Node getRootNode() {
-        return this.rootNode;
+        this.agents = new ArrayList<>();
     }
     public Graph getSimMap() {
         return graph;
     }
 
     public void run() {
-        graph.graphGeneratorSimple(10, 40);
+        this.initSim();
+
         while (true) {
-            this.timestampStart = System.currentTimeMillis();
+            long timestampStart = System.currentTimeMillis();
             this.step();
-            this.timestampEnd = System.currentTimeMillis();
+            long timestampEnd = System.currentTimeMillis();
 
             try {
                 Thread.sleep(clockStep - timestampEnd + timestampStart);
@@ -53,7 +41,46 @@ public class Simulation {
         }
     }
 
+    private void initSim() {
+        ITSpec.callsForHelp = new LinkedList<>();
+        Hacker.knownNodes = new HashSet<>();
+
+        graph.graphGeneratorSimple(5, simData.numberOfNodes);
+        initAgents();
+    }
+
+    private void initAgents() {
+        Random random = new Random();
+
+        Node router = graph.findVertex(0);
+        for (int i = 0; i < simData.numberOfITExperts; i++) {
+            ITSpec itSpec = new ITSpec((float) random.nextGaussian(simData.avgItSkills * 0.001, 0.001f) );
+            itSpec.setLocation(router);
+            router.addAgent(itSpec);
+            agents.add(itSpec);
+        }
+
+
+        for (int i = 0; i < simData.numberOfHackers; i++) {
+            Hacker hacker = new Hacker((float) random.nextGaussian(simData.avgHackerSkills * 0.001, 0.001f));
+            Node location = graph.findVertex(-random.nextInt(simData.numberOfNodes));
+            hacker.setLocation(location);
+            location.addAgent(hacker);
+            agents.add(hacker);
+        }
+    }
+
     public void step() {
-        graph.printHashMap();
+        for (Agent agent : agents) {
+            agent.act();
+        }
+
+        for (Node node : graph.getMap().keySet()) {
+            node.act();
+
+            for (Node n : graph.getMap().get(node)) {
+                n.act();
+            }
+        }
     }
 }

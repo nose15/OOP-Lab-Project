@@ -1,36 +1,32 @@
 package org.pwr.simulation.graph;
 
+import org.pwr.simulation.agents.Agent;
+import org.pwr.simulation.agents.Hacker;
+import org.pwr.simulation.agents.ITSpec;
+
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public abstract class Node {
-
-    protected float currentState;
     protected final float impactCoeficient;
     protected final float balancingPace;
-    protected int balancing;
-    protected int id;
-    List<Node> connectedNodes;
-    Node parent;
+    protected Node parent;
+    protected float currentState;
     protected float stateRange;
     protected float currentImpact;
+    protected int balancing;
+    protected int id;
+    protected int numOfIt;
+    protected int numOfHackers;
+
 
     public Node()
     {
-        connectedNodes = new ArrayList<>();
-        this.impactCoeficient = 2;
-        this.balancingPace = 0.01f;
-    }
-    public void addConnection(Node node)
-    {
-        connectedNodes.add(node);
-    }
-    public List<Node> getConnections()
-    {
-        return connectedNodes;
-    }
+        this.numOfIt = 0;
+        this.numOfHackers = 0;
 
+        this.impactCoeficient = 2; //TODO: Make it a simulation parameter
+        this.balancingPace = 0.01f; //TODO: Make it a simulation parameter
+    }
     public String toString() {
         return String.valueOf(this.hashCode());
     }
@@ -40,6 +36,9 @@ public abstract class Node {
     }
 
     public void act() {
+        if (currentState > 1) currentState = 1;
+        if (currentState < -1) currentState = -1;
+
         setImpactCoeficient();
         communicate();
         approachBalance();
@@ -81,24 +80,33 @@ public abstract class Node {
     {
         return id;
     }
-    public abstract ArrayList<Node> getSwitches();
-    public abstract ArrayList<Node> getComputers();
 
-    public Node getParents() {
-        return parent;
+    public int getNumOfHackers() {
+        return this.numOfHackers;
+    }
+
+    public int getNumOfIT() {
+        return this.numOfIt;
+    }
+
+    public void removeAgent(Agent agent) {
+        if (agent.getClass() == Hacker.class) this.numOfHackers -= 1;
+        if (agent.getClass() == ITSpec.class) this.numOfIt -= 1;
+    }
+
+    public void addAgent(Agent agent) {
+        if (agent.getClass() == Hacker.class) this.numOfHackers += 1;
+        else if (agent.getClass() == ITSpec.class) this.numOfIt += 1;
     }
 
     public abstract void communicate();
     public abstract void setParent(Node parent);
-
     public abstract void addSwitch(Node vertex);
-
     public abstract void addComputer(Node vertex);
-
     public abstract ArrayList<Node> revealChildren();
-
     public abstract ArrayList<Node> revealSwitches();
-
     public abstract Node revealParents();
->>>>>>> main
+    public abstract ArrayList<Node> getSwitches();
+    public abstract ArrayList<Node> getComputers();
+    public abstract  Node getParents();
 }
