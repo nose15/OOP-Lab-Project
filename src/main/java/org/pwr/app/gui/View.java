@@ -125,19 +125,13 @@ public class View {
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap();
-
-            displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
-
+            //displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
             for (Node key : map.keySet()) {
                 if (this.displayGraph.getNode(String.valueOf(key)) == null) {
                     this.displayGraph.addNode(String.valueOf(key));
                     if(key.getId()>0)
                     {
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                "fill-mode: plain; " +
-                                        "fill-color: blue; " +
-                                        "size: 30px;" +
-                                        "shape: circle;");
+                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "switch, neutral");
                         this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label", "Switch " + key.getId());
                     }
                 }
@@ -147,25 +141,13 @@ public class View {
                     if(key.getId()>0)
                     {
                         if (key.getState() > 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: green;" +
-                                            "size: 30px;" +
-                                            "shape: circle; ");
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "switch, healed");
                         }
                         else if (key.getState() < 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: red;" +
-                                            "size: 30px;" +
-                                            "shape: circle; ");
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "switch, infected");
                         }
                         else {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: blue;" +
-                                            "size: 30px;" +
-                                            "shape: circle; ");
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "switch, neutral");
                         }
                         this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                     }
@@ -173,25 +155,13 @@ public class View {
                     if(key.getId()<0)
                     {
                         if (key.getState() > 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: green;" +
-                                            "size: 10px;" +
-                                            "shape: circle; ");
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "computer, healed");
                         }
                         else if (key.getState() < 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: red;" +
-                                            "size: 10px;" +
-                                            "shape: circle; ");
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "computer, infected");
                         }
                         else {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: blue;" +
-                                            "size: 10px;" +
-                                            "shape: circle; ");
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "computer, neutral");
                         }
                         this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                     }
@@ -199,25 +169,13 @@ public class View {
                     if(key.getId() == 0)
                     {
                         if (key.getState() > 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: green;" +
-                                            "size: 50px;" +
-                                            "shape: circle; ");
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "router, healed");
                         }
                         else if (key.getState() < 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: red;" +
-                                            "size: 50px;" +
-                                            "shape: circle; ");
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "router, infected");
                         }
                         else {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: blue;" +
-                                            "size: 50px;" +
-                                            "shape: circle; ");
+                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "router, neutral");
                         }
                         this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                     }
@@ -225,6 +183,9 @@ public class View {
                     this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                 }
             }
+
+            String cssPath = "file:///" + System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/style.css";
+            displayGraph.setAttribute("ui.stylesheet", "url('" + cssPath + "')");
         });
     }
 

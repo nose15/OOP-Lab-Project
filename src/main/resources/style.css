@@ -1,0 +1,40 @@
+node {
+    text-size: 15px;
+    text-alignment: under;
+}
+
+/*Router*/
+node.router {
+    fill-mode: plain;
+    size: 50px;
+    shape: circle;
+}
+
+/*Switch*/
+node.switch {
+    fill-mode: plain;
+    size: 30px;
+    shape: circle;
+}
+
+/*Computer*/
+node.computer{
+    fill-mode: plain;
+    size: 10px;
+    shape: circle;
+}
+
+/*Status*/
+node.healed {
+    fill-color: green;
+}
+
+node.infected {
+    fill-color: red;
+}
+
+node.neutral
+{
+    fill-color: blue;
+}
+
