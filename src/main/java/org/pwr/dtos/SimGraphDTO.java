@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 public class SimGraphDTO {
-    private Map<Node, List<Node>> map;
+    private Graph graph;
 
     public SimGraphDTO(Graph graph) {
-        this.map = graph.getMap();
+        this.graph = graph;
     }
 
-    public Map<Node, List<Node>> getSimMap() {
-        return this.map;
+    public Graph getSimMap() {
+        return this.graph;
     }
 }

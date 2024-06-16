@@ -124,7 +124,7 @@ public class View {
     //TODO: Clean up styling because the amount of spaghetti here is scary
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
-            this.map = simState.simGraphDTO.getSimMap();
+            this.map = simState.simGraphDTO.getSimMap().getMap();
 
             displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
 
