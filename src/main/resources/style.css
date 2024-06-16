@@ -8,6 +8,9 @@ node.router {
     fill-mode: plain;
     size: 50px;
     shape: circle;
+    stroke-mode: plain;
+    stroke-color: red;
+    stroke-width: 2px;
 }
 
 /*Switch*/

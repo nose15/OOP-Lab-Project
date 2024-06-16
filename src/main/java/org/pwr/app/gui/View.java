@@ -2,7 +2,8 @@ package org.pwr.app.gui;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.swingViewer.ViewPanel;
+import org.graphstream.ui.swing_viewer.ViewPanel;
+import org.graphstream.ui.swing_viewer.SwingViewer;
 import org.graphstream.ui.view.Viewer;
 import org.pwr.app.InputManager;
 import org.pwr.app.eventhandling.ButtonActionListener;
@@ -85,10 +86,10 @@ public class View {
     private JPanel addMainMapPanel() {
         JPanel mapPanel = new JPanel();
         mapPanel.setLayout(new BorderLayout());
-        Viewer viewer = displayGraph.display(false);
-        ViewPanel viewPanel = viewer.addDefaultView(false);
-        mapPanel.add(viewPanel);
+        SwingViewer viewer = new SwingViewer(displayGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
+        mapPanel = (JPanel) viewer.addDefaultView(false);
+
         return mapPanel;
     }
 
@@ -125,7 +126,7 @@ public class View {
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap();
-            //displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
+
             for (Node key : map.keySet()) {
                 if (this.displayGraph.getNode(String.valueOf(key)) == null) {
                     this.displayGraph.addNode(String.valueOf(key));
@@ -149,7 +150,6 @@ public class View {
                         else {
                             this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "switch, neutral");
                         }
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                     }
 
                     if(key.getId()<0)
@@ -163,7 +163,6 @@ public class View {
                         else {
                             this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "computer, neutral");
                         }
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                     }
 
                     if(key.getId() == 0)
@@ -179,9 +178,8 @@ public class View {
                         }
                         this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                     }
-
-                    this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
                 }
+                this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
             }
 
             String cssPath = "file:///" + System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/style.css";
