@@ -1,6 +1,8 @@
 package org.pwr.simulation.agents;
 
 import org.pwr.simulation.graph.Node;
+import org.pwr.simulation.graph.Router;
+import org.pwr.simulation.graph.Switch;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -58,14 +60,24 @@ public class ITSpec extends Agent {
             move(callsForHelp.remove());
         }
 
-        ArrayList<Node> computers = this.location.getComputers();
+        ArrayList<Node> computers = null;
+        if(this.location instanceof Switch)
+            computers = ((Switch) this.location).getComputers();
+        else if(this.location instanceof Router)
+            computers = ((Switch) this.location).getComputers();
+
         Node target = this.searchForTarget(computers);
         if (target != null) {
             this.move(target);
             return;
         }
 
-        ArrayList<Node> switches = this.location.getSwitches();
+        ArrayList<Node> switches = null;
+        if(this.location instanceof Switch)
+            switches = ((Switch) this.location).getSwitches();
+        else if(this.location instanceof Router)
+            switches = ((Switch) this.location).getSwitches();
+
         target = this.searchForTarget(switches);
         if (target != null) {
             this.move(target);

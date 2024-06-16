@@ -1,6 +1,9 @@
 package org.pwr.simulation.agents;
 
+import org.pwr.simulation.graph.Computer;
 import org.pwr.simulation.graph.Node;
+import org.pwr.simulation.graph.Switch;
+import org.pwr.simulation.graph.Router;
 
 import java.util.*;
 
@@ -49,21 +52,34 @@ public class Hacker extends Agent {
     }
 
     protected void moveFurther() {
-        Node parent;
-        parent = this.location.revealParents();
+
+        Node parent = null;
+        if(this.location instanceof Switch)
+            parent = ((Switch) this.location).revealParents();
+        else if(this.location instanceof Computer)
+            parent = ((Computer) this.location).revealParents();
 
         if (parent != null) {
             move(parent);
             return;
         }
+        ArrayList<Node> switches = null;
+        if(this.location instanceof Switch)
+            switches = ((Switch) this.location).revealSwitches();
+        else if(this.location instanceof Router)
+            switches = ((Switch) this.location).revealSwitches();
 
-        ArrayList<Node> switches = this.location.revealSwitches();
         Node target = this.searchForTarget(switches);
         if (target != null) {
             move(target);
         }
 
-        ArrayList<Node> children = this.location.revealChildren();
+        ArrayList<Node> children = null;
+        if(this.location instanceof Switch)
+            children = ((Switch) this.location).revealChildren();
+        else if(this.location instanceof Router)
+            children = ((Switch) this.location).revealChildren();
+
         target = this.searchForTarget(children);
         if (target != null) {
             move(target);

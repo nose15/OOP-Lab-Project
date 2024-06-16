@@ -15,47 +15,23 @@ public class Router extends Node {
     public void communicate() {}
 
     @Override
-    public void setParent(Node p) {}
+    public Node getParents() {return null;}
 
-    @Override
     public void addSwitch(Node s) {
         switches.add(s);
     }
 
-    @Override
     public void addComputer(Node c) {}
 
-    @Override
-    public ArrayList<Node> revealChildren() {
-        return null;
-    }
-
-    @Override
     public ArrayList<Node> revealSwitches() {
         if (this.currentState < -0.9) {
             return this.switches;
         }
-
         return null;
     }
 
-    @Override
-    public Node revealParents() {
-        return null;
-    }
-
-    @Override
     public ArrayList<Node> getSwitches() {
         return switches;
     }
 
-    @Override
-    public ArrayList<Node> getComputers() {
-        return null;
-    }
-
-    @Override
-    public Node getParents() {
-        return null;
-    }
 }

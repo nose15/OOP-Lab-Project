@@ -137,18 +137,22 @@ public class Graph {
             addEdge(findVertex(take), addAndGetVertex(new Switch()), true);
             addEdge(findVertex(Switch.getCounter()), addAndGetVertex(new Computer()), true);
 
-            findVertex(take).addSwitch(findVertex(Switch.getCounter()));
-            findVertex(Switch.getCounter()).setParent(findVertex(take));
-            findVertex(Switch.getCounter()).addComputer(findVertex(Computer.getCounter()));
-            findVertex(Computer.getCounter()).setParent(findVertex(Switch.getCounter()));
+            if (findVertex(take) instanceof Router)
+                ((Router) findVertex(take)).addSwitch(findVertex(Switch.getCounter()));
+            else //if to switch
+                ((Switch) findVertex(take)).addSwitch(findVertex(Switch.getCounter()));
+
+            ((Switch) findVertex(Switch.getCounter())).setParent(findVertex(take));
+            ((Switch) findVertex(Switch.getCounter())).addComputer(findVertex(Computer.getCounter()));
+            ((Computer) findVertex(Computer.getCounter())).setParent(findVertex(Switch.getCounter()));
         }
         for(int i = 0; i<numberOfComputer-numberOfSwitch; i++)
         {
             int take = random.nextInt((Switch.getCounter()-1)+1)+1;
             addEdge(findVertex(take), addAndGetVertex(new Computer()), true);
 
-            findVertex(take).addComputer(findVertex(Computer.getCounter()));
-            findVertex(Computer.getCounter()).setParent(findVertex(take));
+            ((Switch) findVertex(take)).addComputer(findVertex(Computer.getCounter()));
+            ((Computer) findVertex(Computer.getCounter())).setParent(findVertex(take));
         }
     }
     public void graphGeneratorAdvance(int numberOfSwitch, int numberOfComputer, float switchConnectivity, float computerConsistancy)
@@ -178,8 +182,13 @@ public class Graph {
             int take = random.nextInt((Switch.getCounter()-0)+1)+0;
             addEdge(findVertex(take), addAndGetVertex((Node) new Switch()), true);
 
-            findVertex(take).addSwitch(findVertex(Switch.getCounter()));
-            findVertex(Switch.getCounter()).setParent(findVertex(take));
+            if(findVertex(take) instanceof Router)
+                ((Router) findVertex(take)).addSwitch(findVertex(Switch.getCounter()));
+            else //For switch connection
+                ((Switch) findVertex(take)).addSwitch(findVertex(Switch.getCounter()));
+
+
+            ((Switch) findVertex(Switch.getCounter())).setParent(findVertex(take));
 
             //Number of other connection to switches
             int conectivity = random.nextInt((Switch.getCounter()-1)+1)+1;
@@ -189,16 +198,16 @@ public class Graph {
                 if(random.nextFloat((1.f-0.01f)+1.f)+0.01f <= switchConnectivity)
                 {
                     int chooseSwitch = random.nextInt((Switch.getCounter()-1)+1)+1;
-                    if(findVertex(take) != findVertex(chooseSwitch) && !findVertex(take).getSwitches().contains(findVertex(chooseSwitch)))
+                    if(findVertex(take) != findVertex(chooseSwitch) && !((Switch) findVertex(take)).getSwitches().contains(findVertex(chooseSwitch)))
                     {
                         addEdge(findVertex(take), findVertex(chooseSwitch), true);
-                        findVertex(chooseSwitch).addSwitch(findVertex(take));
-                        findVertex(take).addSwitch(findVertex(chooseSwitch));
+                        ((Switch) findVertex(chooseSwitch)).addSwitch(findVertex(take));
+                        ((Switch) findVertex(take)).addSwitch(findVertex(chooseSwitch));
                     }
                 }
             }
 
-            if(findVertex(take).getSwitches().isEmpty())
+            if(((Switch) findVertex(take)).getSwitches().isEmpty())
                 endSwitches.add((Switch) findVertex(take));
         }
 
@@ -218,13 +227,13 @@ public class Graph {
         {
             int take = random.nextInt((Switch.getCounter()-1)+1)+1;
 
-            float chance = (random.nextFloat((1.f-0.01f)+1.f)+0.01f)/findVertex(take).getComputers().size();
+            float chance = (random.nextFloat((1.f-0.01f)+1.f)+0.01f)/((Switch) findVertex(take)).getComputers().size();
 
-            if(chance <= computerConsistancy || findVertex(take).getComputers().isEmpty())
+            if(chance <= computerConsistancy || ((Switch) findVertex(take)).getComputers().isEmpty())
             {
                 addEdge(findVertex(take), addAndGetVertex((Node) new Computer()), true);
-                findVertex(take).addComputer(findVertex(Computer.getCounter()));
-                findVertex(Computer.getCounter()).setParent(findVertex(take));
+                ((Switch) findVertex(take)).addComputer(findVertex(Computer.getCounter()));
+                ((Computer) findVertex(Computer.getCounter())).setParent(findVertex(take));
             }
             else
             {

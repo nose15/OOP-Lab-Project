@@ -100,13 +100,5 @@ public abstract class Node {
     }
 
     public abstract void communicate();
-    public abstract void setParent(Node parent);
-    public abstract void addSwitch(Node vertex);
-    public abstract void addComputer(Node vertex);
-    public abstract ArrayList<Node> revealChildren();
-    public abstract ArrayList<Node> revealSwitches();
-    public abstract Node revealParents();
-    public abstract ArrayList<Node> getSwitches();
-    public abstract ArrayList<Node> getComputers();
-    public abstract  Node getParents();
+    public abstract Node getParents();
 }
