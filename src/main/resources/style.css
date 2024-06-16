@@ -8,7 +8,6 @@ node.router {
     fill-mode: plain;
     size: 50px;
     shape: circle;
-
 }
 
 /*Switch*/
@@ -27,11 +26,11 @@ node.computer{
 
 /*Status*/
 node.healed {
-    fill-color: green;
+    fill-color: rgb(41, 172, 41);
 }
 
 node.infected {
-    fill-color: red;
+    fill-color: rgb(131, 5, 11);
 }
 
 node.neutral
@@ -39,3 +38,31 @@ node.neutral
     fill-color: blue;
 }
 
+node.dubleAgent
+{
+    shadow-mode: gradient-horizontal;
+    shadow-width: 4px;
+    shadow-color: red, green;
+    shadow-offset: 0px;
+}
+
+node.hacker
+{
+    shadow-mode: plain;
+    shadow-width: 4px;
+    shadow-color: red;
+    shadow-offset: 0px;
+}
+
+node.it
+{
+    shadow-mode: plain;
+    shadow-width: 4px;
+    shadow-color: green;
+    shadow-offset: 0px;
+}
+
+node.attacked
+{
+    shadow-mode: none;
+}

@@ -18,6 +18,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -125,56 +126,42 @@ public class View {
             for (Node key : map.keySet()) {
                 if (this.displayGraph.getNode(String.valueOf(key)) == null) {
                     this.displayGraph.addNode(String.valueOf(key));
-                    if(key.getId()>0)
-                    {
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "switch, neutral");
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label", "Switch " + key.getId());
-                    }
                 }
                 for (Node a : map.get(key)) {
                     if (this.displayGraph.getNode(String.valueOf(a)) == null) this.displayGraph.addNode(String.valueOf(a));
                     if (this.displayGraph.getEdge(Integer.toString(a.getId()) + "0" + Integer.toString(key.getId())) == null &&
                             this.displayGraph.getEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId())) == null)
                         this.displayGraph.addEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId()), String.valueOf(key), String.valueOf(a));
+
+
+                    //Add each style class to array then add all calsses to node at once
+                    ArrayList<String> defineNodeStyle = new ArrayList<>();
+                    //Define type of node and set specific style
                     if(key.getId()>0)
-                    {
-                        if (key.getState() > 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "switch, healed");
-                        }
-                        else if (key.getState() < 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "switch, infected");
-                        }
-                        else {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "switch, neutral");
-                        }
-                    }
+                            defineNodeStyle.add("switch");
+                    else if(key.getId()<0)
+                            defineNodeStyle.add("computer");
+                    else if(key.getId() == 0)
+                            defineNodeStyle.add("router");
 
-                    if(key.getId()<0)
-                    {
-                        if (key.getState() > 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "computer, healed");
-                        }
-                        else if (key.getState() < 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "computer, infected");
-                        }
-                        else {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "computer, neutral");
-                        }
-                    }
+                    //Define current state of node
+                    if (key.getState() > 0)
+                        defineNodeStyle.add("healed");
+                    else if (key.getState() < 0)
+                        defineNodeStyle.add("infected");
+                    else
+                        defineNodeStyle.add("neutral");
 
-                    if(key.getId() == 0)
-                    {
-                        if (key.getState() > 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "router, healed");
-                        }
-                        else if (key.getState() < 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "router, infected");
-                        }
-                        else {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", "router, neutral");
-                        }
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
-                    }
+                    if(key.getNumOfIT() > 0 && key.getNumOfHackers() > 0)
+                        defineNodeStyle.add("dubleAgent");
+                    else if(key.getNumOfHackers() > 0)
+                        defineNodeStyle.add("hacker");
+                    else if(key.getNumOfIT() > 0)
+                        defineNodeStyle.add("it");
+                    else
+                        defineNodeStyle.add("empty");
+
+                    this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", defineNodeStyle.toArray());
                 }
                 this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
             }
