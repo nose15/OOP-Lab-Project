@@ -55,12 +55,13 @@ public class View {
         // Now it's hardcoded but giving the control to the App module would be more appropriate
         confPanel.add(createSpinnerInputPanel("Liczba hakerów", 0, 100, spinnerChangeListener, "setNumberOfHackers"));
         confPanel.add(createSpinnerInputPanel("Liczba Informatyków", 0, 100, spinnerChangeListener, "setNumberOfITExperts"));
-        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 0, 1000, spinnerChangeListener, "setNumberOfNodes"));
+        confPanel.add(createSpinnerInputPanel("Liczba switchy", 0, 100, spinnerChangeListener, "setNumberOfSwitches"));
+        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 0, 200, spinnerChangeListener, "setNumberOfComputers"));
         confPanel.add(createSliderInputPanel("Kompetencje Informatyków", 0, 100, sliderChangeListener, "setAvgItSkills"));
         confPanel.add(createSliderInputPanel("Kompetencje Hakerów", 0, 100, sliderChangeListener, "setAvgHackerSkills"));
         confPanel.add(createSpinnerInputPanel("Tempo utraty odporności", 0, 100, spinnerChangeListener, "setResistanceLossPace"));
-        confPanel.add(createCheckBoxInputPanel("Rozprzestrzenianie się Malwaru", checkBoxActionListener, "setMalwareSpread"));
         confPanel.add(createSpinnerInputPanel("Tempo rozprzestrzeniania się malwaru", 0, 100, spinnerChangeListener, "setMalwareSpreadPace"));
+        confPanel.add(createCheckBoxInputPanel("Rozprzestrzenianie się Malwaru", checkBoxActionListener, "setMalwareSpread"));
         confPanel.add(createButtonPanel("Start", this.buttonActionListener, "start"));
 
         return confPanel;
@@ -70,6 +71,7 @@ public class View {
         JSplitPane rightSplitPane = new JSplitPane();
         rightSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         rightSplitPane.setDividerLocation(900);
+
 
         JPanel mapPanel = addMainMapPanel();
         JPanel statsPanel = addMainStatsPanel();
@@ -108,9 +110,12 @@ public class View {
         mainSplitPane.setDividerLocation(300);
 
         JPanel confPanel = setMainConfPanel();
-        JSplitPane rightSplitPane = setMainRightSplitPlane();
+        //JSplitPane rightSplitPane = setMainRightSplitPlane();
         mainSplitPane.setTopComponent(confPanel);
-        mainSplitPane.setBottomComponent(rightSplitPane);
+        //mainSplitPane.setBottomComponent(rightSplitPane);
+
+        JPanel map = addMainMapPanel();
+        mainSplitPane.setBottomComponent(map);
 
         currentFrame.add(mainSplitPane, BorderLayout.CENTER);
         currentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

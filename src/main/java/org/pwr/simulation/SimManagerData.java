@@ -1,7 +1,9 @@
 package org.pwr.simulation;
 
 public class SimManagerData {
-    public int numberOfNodes;
+    public int numberOfComputers;
+    public int numberOfSwitches;
+
     public int numberOfHackers;
     public int numberOfITExperts;
     public float avgHackerSkills;
@@ -21,7 +23,8 @@ public class SimManagerData {
         this.avgHackerSkills = 0;
         this.numberOfITExperts = 0;
         this.malwareSpread = false;
-        this.numberOfNodes = 0;
+        this.numberOfComputers = 0;
+        this.numberOfSwitches = 0;
         this.clockStep = 1000;
     }
 }
