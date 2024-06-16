@@ -2,7 +2,6 @@ package org.pwr.app.gui;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.swing_viewer.ViewPanel;
 import org.graphstream.ui.swing_viewer.SwingViewer;
 import org.graphstream.ui.view.Viewer;
 import org.pwr.app.InputManager;
@@ -32,7 +31,6 @@ public class View {
     private final ChangeListener sliderChangeListener;
     private final ActionListener checkBoxActionListener;
     private final ActionListener buttonActionListener;
-    private DefaultListModel<String> mapListModel;
     private BlockingQueue<SimStateDTO> simToGuiQueue;
     private InputManager inputManager;
     private Graph displayGraph;
@@ -45,8 +43,6 @@ public class View {
         this.sliderChangeListener = new SliderChangeListener(this.inputManager);
         this.checkBoxActionListener = new CheckBoxActionListener(this.inputManager);
         this.buttonActionListener = new ButtonActionListener(this.inputManager);
-
-        this.mapListModel = new DefaultListModel<>();
         this.displayGraph = new MultiGraph("simMapDisplay");
     }
 
@@ -126,7 +122,6 @@ public class View {
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap();
-
             for (Node key : map.keySet()) {
                 if (this.displayGraph.getNode(String.valueOf(key)) == null) {
                     this.displayGraph.addNode(String.valueOf(key));
@@ -138,7 +133,9 @@ public class View {
                 }
                 for (Node a : map.get(key)) {
                     if (this.displayGraph.getNode(String.valueOf(a)) == null) this.displayGraph.addNode(String.valueOf(a));
-                    if (this.displayGraph.getEdge(key + String.valueOf(a)) == null) this.displayGraph.addEdge(key + String.valueOf(a), String.valueOf(key), String.valueOf(a));
+                    if (this.displayGraph.getEdge(Integer.toString(a.getId()) + "0" + Integer.toString(key.getId())) == null &&
+                            this.displayGraph.getEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId())) == null)
+                        this.displayGraph.addEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId()), String.valueOf(key), String.valueOf(a));
                     if(key.getId()>0)
                     {
                         if (key.getState() > 0) {
@@ -184,6 +181,7 @@ public class View {
 
             String cssPath = "file:///" + System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/style.css";
             displayGraph.setAttribute("ui.stylesheet", "url('" + cssPath + "')");
+
         });
     }
 
