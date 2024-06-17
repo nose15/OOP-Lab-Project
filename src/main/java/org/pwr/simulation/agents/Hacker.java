@@ -67,7 +67,7 @@ public class Hacker extends Agent {
         if(this.location instanceof Switch)
             switches = ((Switch) this.location).revealSwitches();
         else if(this.location instanceof Router)
-            switches = ((Switch) this.location).revealSwitches();
+            switches = ((Router) this.location).revealSwitches();
 
         Node target = this.searchForTarget(switches);
         if (target != null) {
@@ -76,8 +76,6 @@ public class Hacker extends Agent {
 
         ArrayList<Node> children = null;
         if(this.location instanceof Switch)
-            children = ((Switch) this.location).revealChildren();
-        else if(this.location instanceof Router)
             children = ((Switch) this.location).revealChildren();
 
         target = this.searchForTarget(children);

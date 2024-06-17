@@ -63,8 +63,7 @@ public class ITSpec extends Agent {
         ArrayList<Node> computers = null;
         if(this.location instanceof Switch)
             computers = ((Switch) this.location).getComputers();
-        else if(this.location instanceof Router)
-            computers = ((Switch) this.location).getComputers();
+
 
         Node target = this.searchForTarget(computers);
         if (target != null) {
@@ -76,7 +75,7 @@ public class ITSpec extends Agent {
         if(this.location instanceof Switch)
             switches = ((Switch) this.location).getSwitches();
         else if(this.location instanceof Router)
-            switches = ((Switch) this.location).getSwitches();
+            switches = ((Router) this.location).getSwitches();
 
         target = this.searchForTarget(switches);
         if (target != null) {
