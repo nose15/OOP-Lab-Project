@@ -24,37 +24,11 @@ public class Computer extends Node {
     {
         parent = p;
     }
-    public void addSwitch(Node s) {}
-    public void addComputer(Node c) {}
 
-    @Override
-    public ArrayList<Node> revealChildren() {
-        return null;
-    }
-
-    @Override
-    public ArrayList<Node> revealSwitches() {
-        return null;
-    }
-
-    @Override
     public Node revealParents() {
         return parent;
     }
 
-    @Override
-    public ArrayList<Node> getComputers()
-    {
-        return null;
-    }
-
-    @Override
-    public ArrayList<Node> getSwitches()
-    {
-        return null;
-    }
-
-    @Override
     public Node getParents()
     {
         return parent;

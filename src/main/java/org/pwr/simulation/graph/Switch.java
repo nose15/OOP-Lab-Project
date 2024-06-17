@@ -29,25 +29,21 @@ public class Switch extends Node {
     @Override
     public void communicate() {}
 
-    @Override
     public void setParent(Node parent)
     {
         this.parent = parent;
     }
 
-    @Override
     public void addSwitch(Node s)
     {
         switches.add(s);
     }
 
-    @Override
     public void addComputer(Node c)
     {
         computers.add(c);
     }
 
-    @Override
     public ArrayList<Node> revealChildren() {
         if (this.currentState < this.childrenRevealThreshold) {
             return null;
@@ -56,7 +52,6 @@ public class Switch extends Node {
         return computers;
     }
 
-    @Override
     public ArrayList<Node> revealSwitches() {
         if (this.currentState < this.peersRevealThreshold) {
             return null;
@@ -65,7 +60,6 @@ public class Switch extends Node {
         return switches;
     }
 
-    @Override
     public Node revealParents() {
         if (this.currentState < this.parentRevealThreshold) {
             return null;
@@ -74,17 +68,14 @@ public class Switch extends Node {
         return parent;
     }
 
-    @Override
     public ArrayList<Node> getComputers() {
         return computers;
     }
 
-    @Override
     public ArrayList<Node> getSwitches() {
         return switches;
     }
 
-    @Override
     public Node getParents() {
         return parent;
     }
