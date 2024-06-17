@@ -21,7 +21,7 @@ public class Simulation {
         this.graph = new Graph();
         this.agents = new ArrayList<>();
     }
-    public Graph getSimMap() {
+    public Graph getSimGraph() {
         return graph;
     }
 
