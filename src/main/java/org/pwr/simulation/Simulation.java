@@ -45,7 +45,7 @@ public class Simulation {
         ITSpec.callsForHelp = new LinkedList<>();
         Hacker.knownNodes = new HashSet<>();
 
-        graph.graphGeneratorSimple(5, simData.numberOfNodes);
+        graph.graphGeneratorSimple(5, simData.numberOfComputers);
         initAgents();
     }
 
@@ -63,7 +63,7 @@ public class Simulation {
 
         for (int i = 0; i < simData.numberOfHackers; i++) {
             Hacker hacker = new Hacker((float) random.nextGaussian(simData.avgHackerSkills * 0.001, 0.001f));
-            Node location = graph.findVertex(-random.nextInt(simData.numberOfNodes));
+            Node location = graph.findVertex(-random.nextInt(simData.numberOfComputers));
             hacker.setLocation(location);
             location.addAgent(hacker);
             agents.add(hacker);

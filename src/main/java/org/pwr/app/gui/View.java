@@ -2,7 +2,7 @@ package org.pwr.app.gui;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.swingViewer.ViewPanel;
+import org.graphstream.ui.swing_viewer.SwingViewer;
 import org.graphstream.ui.view.Viewer;
 import org.pwr.app.InputManager;
 import org.pwr.app.eventhandling.ButtonActionListener;
@@ -18,6 +18,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -31,7 +32,6 @@ public class View {
     private final ChangeListener sliderChangeListener;
     private final ActionListener checkBoxActionListener;
     private final ActionListener buttonActionListener;
-    private DefaultListModel<String> mapListModel;
     private BlockingQueue<SimStateDTO> simToGuiQueue;
     private InputManager inputManager;
     private Graph displayGraph;
@@ -44,8 +44,6 @@ public class View {
         this.sliderChangeListener = new SliderChangeListener(this.inputManager);
         this.checkBoxActionListener = new CheckBoxActionListener(this.inputManager);
         this.buttonActionListener = new ButtonActionListener(this.inputManager);
-
-        this.mapListModel = new DefaultListModel<>();
         this.displayGraph = new MultiGraph("simMapDisplay");
     }
 
@@ -57,12 +55,13 @@ public class View {
         // Now it's hardcoded but giving the control to the App module would be more appropriate
         confPanel.add(createSpinnerInputPanel("Liczba hakerów", 0, 100, spinnerChangeListener, "setNumberOfHackers"));
         confPanel.add(createSpinnerInputPanel("Liczba Informatyków", 0, 100, spinnerChangeListener, "setNumberOfITExperts"));
-        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 0, 1000, spinnerChangeListener, "setNumberOfNodes"));
+        confPanel.add(createSpinnerInputPanel("Liczba switchy", 0, 100, spinnerChangeListener, "setNumberOfSwitches"));
+        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 0, 200, spinnerChangeListener, "setNumberOfComputers"));
         confPanel.add(createSliderInputPanel("Kompetencje Informatyków", 0, 100, sliderChangeListener, "setAvgItSkills"));
         confPanel.add(createSliderInputPanel("Kompetencje Hakerów", 0, 100, sliderChangeListener, "setAvgHackerSkills"));
         confPanel.add(createSpinnerInputPanel("Tempo utraty odporności", 0, 100, spinnerChangeListener, "setResistanceLossPace"));
-        confPanel.add(createCheckBoxInputPanel("Rozprzestrzenianie się Malwaru", checkBoxActionListener, "setMalwareSpread"));
         confPanel.add(createSpinnerInputPanel("Tempo rozprzestrzeniania się malwaru", 0, 100, spinnerChangeListener, "setMalwareSpreadPace"));
+        confPanel.add(createCheckBoxInputPanel("Rozprzestrzenianie się Malwaru", checkBoxActionListener, "setMalwareSpread"));
         confPanel.add(createButtonPanel("Start", this.buttonActionListener, "start"));
 
         return confPanel;
@@ -72,6 +71,7 @@ public class View {
         JSplitPane rightSplitPane = new JSplitPane();
         rightSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         rightSplitPane.setDividerLocation(900);
+
 
         JPanel mapPanel = addMainMapPanel();
         JPanel statsPanel = addMainStatsPanel();
@@ -85,10 +85,10 @@ public class View {
     private JPanel addMainMapPanel() {
         JPanel mapPanel = new JPanel();
         mapPanel.setLayout(new BorderLayout());
-        Viewer viewer = displayGraph.display(false);
-        ViewPanel viewPanel = viewer.addDefaultView(false);
-        mapPanel.add(viewPanel);
+        SwingViewer viewer = new SwingViewer(displayGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
+        mapPanel = (JPanel) viewer.addDefaultView(false);
+
         return mapPanel;
     }
 
@@ -110,9 +110,12 @@ public class View {
         mainSplitPane.setDividerLocation(300);
 
         JPanel confPanel = setMainConfPanel();
-        JSplitPane rightSplitPane = setMainRightSplitPlane();
+        //JSplitPane rightSplitPane = setMainRightSplitPlane();
         mainSplitPane.setTopComponent(confPanel);
-        mainSplitPane.setBottomComponent(rightSplitPane);
+        //mainSplitPane.setBottomComponent(rightSplitPane);
+
+        JPanel map = addMainMapPanel();
+        mainSplitPane.setBottomComponent(map);
 
         currentFrame.add(mainSplitPane, BorderLayout.CENTER);
         currentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -124,107 +127,55 @@ public class View {
     //TODO: Clean up styling because the amount of spaghetti here is scary
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
-            this.map = simState.simGraphDTO.getSimMap().getMap();
-
+            this.map = simState.simGraphDTO.getSimMap();
             displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
-
+          
             for (Node key : map.keySet()) {
                 if (this.displayGraph.getNode(String.valueOf(key)) == null) {
                     this.displayGraph.addNode(String.valueOf(key));
-                    if(key.getId()>0)
-                    {
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                "fill-mode: plain; " +
-                                        "fill-color: blue; " +
-                                        "size: 30px;" +
-                                        "shape: circle;");
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label", "Switch " + key.getId());
-                    }
                 }
                 for (Node a : map.get(key)) {
                     if (this.displayGraph.getNode(String.valueOf(a)) == null) this.displayGraph.addNode(String.valueOf(a));
-                    if (this.displayGraph.getEdge(key + String.valueOf(a)) == null) this.displayGraph.addEdge(key + String.valueOf(a), String.valueOf(key), String.valueOf(a));
+                    if (this.displayGraph.getEdge(Integer.toString(a.getId()) + "0" + Integer.toString(key.getId())) == null &&
+                            this.displayGraph.getEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId())) == null)
+                        this.displayGraph.addEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId()), String.valueOf(key), String.valueOf(a));
+
+
+                    //Add each style class to array then add all calsses to node at once
+                    ArrayList<String> defineNodeStyle = new ArrayList<>();
+                    //Define type of node and set specific style
                     if(key.getId()>0)
-                    {
-                        if (key.getState() > 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: green;" +
-                                            "size: 30px;" +
-                                            "shape: circle; ");
-                        }
-                        else if (key.getState() < 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: red;" +
-                                            "size: 30px;" +
-                                            "shape: circle; ");
-                        }
-                        else {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: blue;" +
-                                            "size: 30px;" +
-                                            "shape: circle; ");
-                        }
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
-                    }
+                            defineNodeStyle.add("switch");
+                    else if(key.getId()<0)
+                            defineNodeStyle.add("computer");
+                    else if(key.getId() == 0)
+                            defineNodeStyle.add("router");
 
-                    if(key.getId()<0)
-                    {
-                        if (key.getState() > 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: green;" +
-                                            "size: 10px;" +
-                                            "shape: circle; ");
-                        }
-                        else if (key.getState() < 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: red;" +
-                                            "size: 10px;" +
-                                            "shape: circle; ");
-                        }
-                        else {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: blue;" +
-                                            "size: 10px;" +
-                                            "shape: circle; ");
-                        }
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
-                    }
+                    //Define current state of node
+                    if (key.getState() > 0)
+                        defineNodeStyle.add("healed");
+                    else if (key.getState() < 0)
+                        defineNodeStyle.add("infected");
+                    else
+                        defineNodeStyle.add("neutral");
 
-                    if(key.getId() == 0)
-                    {
-                        if (key.getState() > 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: green;" +
-                                            "size: 50px;" +
-                                            "shape: circle; ");
-                        }
-                        else if (key.getState() < 0) {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: red;" +
-                                            "size: 50px;" +
-                                            "shape: circle; ");
-                        }
-                        else {
-                            this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.style",
-                                    "fill-mode: plain; " +
-                                            "fill-color: blue;" +
-                                            "size: 50px;" +
-                                            "shape: circle; ");
-                        }
-                        this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
-                    }
+                    if(key.getNumOfIT() > 0 && key.getNumOfHackers() > 0)
+                        defineNodeStyle.add("dubleAgent");
+                    else if(key.getNumOfHackers() > 0)
+                        defineNodeStyle.add("hacker");
+                    else if(key.getNumOfIT() > 0)
+                        defineNodeStyle.add("it");
+                    else
+                        defineNodeStyle.add("empty");
 
-                    this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
+                    this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.class", defineNodeStyle.toArray());
                 }
+                this.displayGraph.getNode(String.valueOf(key)).setAttribute("ui.label",key.getState() + " \n h: " + key.getNumOfHackers() + " | it: " + key.getNumOfIT());
             }
+
+            String cssPath = "file:///" + System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/style.css";
+            displayGraph.setAttribute("ui.stylesheet", "url('" + cssPath + "')");
+
         });
     }
 
