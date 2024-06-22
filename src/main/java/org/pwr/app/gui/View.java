@@ -136,9 +136,9 @@ public class View {
                 }
                 for (Node a : map.get(key)) {
                     if (this.displayGraph.getNode(String.valueOf(a)) == null) this.displayGraph.addNode(String.valueOf(a));
-                    if (this.displayGraph.getEdge(Integer.toString(a.getId()) + "0" + Integer.toString(key.getId())) == null &&
-                            this.displayGraph.getEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId())) == null)
-                        this.displayGraph.addEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId()), String.valueOf(key), String.valueOf(a));
+                    if (this.displayGraph.getEdge(a.getId() + "0" + key.getId()) == null &&
+                            this.displayGraph.getEdge(key.getId() + "0" + a.getId()) == null)
+                        this.displayGraph.addEdge(key.getId() + "0" + a.getId(), String.valueOf(key), String.valueOf(a));
 
 
                     //Add each style class to array then add all calsses to node at once
