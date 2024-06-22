@@ -10,7 +10,7 @@ import java.util.*;
 
 
 public class Simulation {
-    private final SimManagerData simData;
+    private SimManagerData simData;
     private final long clockStep;
     private final ArrayList<Agent> agents;
     private final Graph graph;
@@ -20,12 +20,17 @@ public class Simulation {
         this.clockStep = this.simData.clockStep;
         this.graph = new Graph();
         this.agents = new ArrayList<>();
+        ITSpec.callsForHelp = new LinkedList<>();
+        Hacker.knownNodes = new HashSet<>();
     }
     public Graph getSimGraph() {
         return graph;
     }
 
     public void run() {
+        System.out.println("Sim running");
+
+        this.simData.isRunning = true;
         this.initSim();
 
         while (true) {
@@ -42,10 +47,6 @@ public class Simulation {
     }
 
     private void initSim() {
-        ITSpec.callsForHelp = new LinkedList<>();
-        Hacker.knownNodes = new HashSet<>();
-
-        graph.graphGeneratorSimple(5, simData.numberOfComputers);
         initAgents();
     }
 
@@ -68,6 +69,9 @@ public class Simulation {
             location.addAgent(hacker);
             agents.add(hacker);
         }
+    }
+    public void render() {
+        graph.graphGeneratorSimple(simData.numberOfSwitches, simData.numberOfComputers);
     }
 
     public void step() {

@@ -16,6 +16,10 @@ public class Computer extends Node {
     {
         return counter;
     }
+    static void setCounter(int val) {
+        counter = val;
+    }
+
 
     @Override
     public void communicate() {}

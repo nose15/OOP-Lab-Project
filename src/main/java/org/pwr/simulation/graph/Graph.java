@@ -1,8 +1,6 @@
 package org.pwr.simulation.graph;
 
-import java.security.PublicKey;
 import java.util.*;
-import org.pwr.simulation.graph.Node;
 
 public class Graph {
 
@@ -123,10 +121,15 @@ public class Graph {
     }
     public void graphGeneratorSimple(int numberOfSwitch, int numberOfComputer)
     {
+        System.out.println(numberOfSwitch + " " + numberOfComputer);
+
         if(numberOfSwitch < 1 || numberOfComputer < 1)
             throw new IllegalArgumentException("Number of switches and computers must be greater than 0");
         if(numberOfSwitch > numberOfComputer)
             throw new IllegalArgumentException("Number of switches must be less than number of computers");
+
+        this.mapReset();
+
 
         addVertex((Node) new Router());
         Random random = new Random();
@@ -155,6 +158,14 @@ public class Graph {
             ((Computer) findVertex(Computer.getCounter())).setParent(findVertex(take));
         }
     }
+
+    private void mapReset() {
+        map.clear();
+        Switch.setCounter(0);
+        Computer.setCounter(0);
+
+    }
+
     public void graphGeneratorAdvance(int numberOfSwitch, int numberOfComputer, float switchConnectivity, float computerConsistancy)
     {
         if(numberOfSwitch < 1 || numberOfComputer < 1)

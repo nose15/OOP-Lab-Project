@@ -3,11 +3,12 @@ package org.pwr.simulation;
 import org.pwr.dtos.ConfigDTO;
 import org.pwr.dtos.SimStateDTO;
 
+import java.util.Queue;
 import java.util.concurrent.*;
 
 public class SimulationManager {
     private final SimulationThread simulationThread;
-    private final BlockingQueue<String> threadControlQueue;
+    private final Queue<String> threadControlQueue;
     private final SimInputHandler simInputHandler;
     private final SimManagerData simManagerData;
 
@@ -16,7 +17,7 @@ public class SimulationManager {
         this.simManagerData = new SimManagerData();
         this.simInputHandler = new SimInputHandler(this, guiToSimQueue);
         this.simulationThread = new SimulationThread(simManagerData, this.threadControlQueue);
-        SimStateUpdater simStateUpdater = new SimStateUpdater(this.simulationThread.getGraph(), simToGuiQueue);
+        SimStateUpdater simStateUpdater = new SimStateUpdater(this.simulationThread.getGraph(), simManagerData.isRunning, simToGuiQueue);
 
         simStateUpdater.run();
         this.simInputHandler.start();
@@ -24,11 +25,7 @@ public class SimulationManager {
     }
 
     public void startSimulation() {
-        try {
-            this.threadControlQueue.put("start");
-        } catch (InterruptedException e) {
-            System.err.println(e.getMessage());
-        }
+        this.threadControlQueue.add("start");
     }
 
     public void pauseSimulation() {

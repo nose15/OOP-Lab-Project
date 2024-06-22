@@ -12,11 +12,13 @@ public class SimStateUpdater {
     private final SimGraphDTO simGraphDTO;
     private final BlockingQueue<SimStateDTO> simStateDTOs;
     private final ScheduledExecutorService scheduler;
+    private boolean isRunning;
 
-    public SimStateUpdater(SimGraphDTO simGraphDTO, BlockingQueue<SimStateDTO> simStateDTOs) {
+    public SimStateUpdater(SimGraphDTO simGraphDTO, boolean isRunning, BlockingQueue<SimStateDTO> simStateDTOs) {
         this.simGraphDTO = simGraphDTO;
         this.simStateDTOs = simStateDTOs;
         this.scheduler = new ScheduledThreadPoolExecutor(1);
+        this.isRunning = isRunning;
     }
 
     public void run() {
@@ -33,6 +35,6 @@ public class SimStateUpdater {
     }
 
     private SimStateDTO packState() {
-        return new SimStateDTO(this.simGraphDTO);
+        return new SimStateDTO(this.simGraphDTO, this.isRunning);
     }
 }

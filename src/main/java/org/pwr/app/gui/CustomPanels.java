@@ -9,7 +9,7 @@ public class CustomPanels {
     public static JPanel createSpinnerInputPanel(String label, int min, int max, ChangeListener spinnerChangeListener, String name) {
         JPanel spinnerInputPanel = new JPanel();
         spinnerInputPanel.setLayout(new GridLayout(2, 1));
-        SpinnerModel spinnerModel = new SpinnerNumberModel(1, min, max, 1); // initial value, min, max, step
+        SpinnerModel spinnerModel = new SpinnerNumberModel(3, min, max, 1); // initial value, min, max, step
         JSpinner spinner = new JSpinner(spinnerModel);
         spinner.setName(name);
         JLabel jlabel = new JLabel(label);

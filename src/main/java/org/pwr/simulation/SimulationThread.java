@@ -1,15 +1,19 @@
 package org.pwr.simulation;
 import org.pwr.dtos.SimGraphDTO;
 
+import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 
 public class SimulationThread extends Thread {
-    private final BlockingQueue<String> managerToThreadQueue;
+    private final Queue<String> managerToThreadQueue;
     private final Simulation simulation;
+    private final SimManagerData config;
 
-    public SimulationThread(SimManagerData simManagerData, BlockingQueue<String> managerToThreadQueue) {
+    public SimulationThread(SimManagerData simManagerData, Queue<String> managerToThreadQueue) {
         this.managerToThreadQueue = managerToThreadQueue;
         this.simulation = new Simulation(simManagerData);
+        this.config = simManagerData;
     }
 
     public SimGraphDTO getGraph() {
@@ -21,12 +25,27 @@ public class SimulationThread extends Thread {
         System.out.println("Sim Thread running");
         while (true) {
             try {
-                if(managerToThreadQueue.take().equals("start")) break;
+                this.simPrerender();
+                System.out.println("Running");
+                if(managerToThreadQueue.remove().equals("start")) {
+                    System.out.println("Start");
+                    break;
+                }
+            } catch (NoSuchElementException e) {
+                System.out.println(e.getMessage());
+            }
+
+            try {
+                Thread.sleep(config.clockStep);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-        simulation.run();
+        this.simulation.run();
+    }
+
+    private void simPrerender() {
+        this.simulation.render();
     }
 
     public void pause() {

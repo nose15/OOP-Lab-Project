@@ -11,6 +11,7 @@ import org.pwr.app.eventhandling.SliderChangeListener;
 import org.pwr.app.eventhandling.SpinnerChangeListener;
 import org.pwr.dtos.ConfigDTO;
 import org.pwr.dtos.SimStateDTO;
+import org.pwr.simulation.Simulation;
 import org.pwr.simulation.graph.Node;
 
 import javax.swing.*;
@@ -53,10 +54,10 @@ public class View {
 
         // TODO: Make it a separate function so the App can just add new config options
         // Now it's hardcoded but giving the control to the App module would be more appropriate
-        confPanel.add(createSpinnerInputPanel("Liczba hakerów", 0, 100, spinnerChangeListener, "setNumberOfHackers"));
-        confPanel.add(createSpinnerInputPanel("Liczba Informatyków", 0, 100, spinnerChangeListener, "setNumberOfITExperts"));
-        confPanel.add(createSpinnerInputPanel("Liczba switchy", 0, 100, spinnerChangeListener, "setNumberOfSwitches"));
-        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 0, 200, spinnerChangeListener, "setNumberOfComputers"));
+        confPanel.add(createSpinnerInputPanel("Liczba hakerów", 1, 100, spinnerChangeListener, "setNumberOfHackers"));
+        confPanel.add(createSpinnerInputPanel("Liczba Informatyków", 1, 100, spinnerChangeListener, "setNumberOfITExperts"));
+        confPanel.add(createSpinnerInputPanel("Liczba switchy", 2, 100, spinnerChangeListener, "setNumberOfSwitches"));
+        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 2, 200, spinnerChangeListener, "setNumberOfComputers"));
         confPanel.add(createSliderInputPanel("Kompetencje Informatyków", 0, 100, sliderChangeListener, "setAvgItSkills"));
         confPanel.add(createSliderInputPanel("Kompetencje Hakerów", 0, 100, sliderChangeListener, "setAvgHackerSkills"));
         confPanel.add(createSpinnerInputPanel("Tempo utraty odporności", 0, 100, spinnerChangeListener, "setResistanceLossPace"));
@@ -128,8 +129,13 @@ public class View {
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap().getMap();
+
+            if (!simState.isRunning) {
+                displayGraph.clear();
+            }
+
             displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
-          
+
             for (Node key : map.keySet()) {
                 if (this.displayGraph.getNode(String.valueOf(key)) == null) {
                     this.displayGraph.addNode(String.valueOf(key));

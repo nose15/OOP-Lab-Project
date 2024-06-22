@@ -14,17 +14,19 @@ public class SimManagerData {
     public float malwareSpreadPace;
 
     public int clockStep;
+    public boolean isRunning;
 
     public SimManagerData() {
-        this.numberOfHackers = 0;
+        this.numberOfHackers = 5;
         this.malwareSpreadPace = 0;
-        this.resistanceLossPace = 0;
-        this.avgItSkills = 0;
-        this.avgHackerSkills = 0;
-        this.numberOfITExperts = 0;
+        this.resistanceLossPace = 0.5f;
+        this.avgItSkills = 0.5f;
+        this.avgHackerSkills = 0.5f;
+        this.numberOfITExperts = 5;
         this.malwareSpread = false;
-        this.numberOfComputers = 0;
-        this.numberOfSwitches = 0;
+        this.numberOfComputers = 5;
+        this.numberOfSwitches = 2;
         this.clockStep = 1000;
+        this.isRunning = false;
     }
 }
