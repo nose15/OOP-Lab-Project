@@ -37,6 +37,7 @@ public class View {
     private InputManager inputManager;
     private Graph displayGraph;
     private Map<Node, List<Node>> map;
+    private boolean isGraphRendered;
 
     public View(BlockingQueue<SimStateDTO> simToGuiQueue, BlockingQueue<ConfigDTO> guiToSimQueue) {
         this.inputManager = new InputManager(guiToSimQueue);
@@ -135,7 +136,7 @@ public class View {
             }
 
             displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
-
+            
             for (Node key : map.keySet()) {
                 if (this.displayGraph.getNode(String.valueOf(key)) == null) {
                     this.displayGraph.addNode(String.valueOf(key));

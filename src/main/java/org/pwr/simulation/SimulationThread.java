@@ -14,6 +14,7 @@ public class SimulationThread extends Thread {
         this.managerToThreadQueue = managerToThreadQueue;
         this.simulation = new Simulation(simManagerData);
         this.config = simManagerData;
+        this.simulation.generate();
     }
 
     public SimGraphDTO getGraph() {

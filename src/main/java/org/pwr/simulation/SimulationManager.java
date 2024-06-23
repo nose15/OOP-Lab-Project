@@ -21,6 +21,7 @@ public class SimulationManager {
         this.simulationThread = new SimulationThread(simManagerData, this.threadControlQueue);
         this.simStateUpdater = new SimStateUpdater(this.simulationThread.getGraph(), simToGuiQueue);
 
+        this.simStateUpdater.sendRenderUpdate();
         this.simInputHandler.start();
         this.runSimulationThread();
     }
