@@ -29,8 +29,6 @@ public class Simulation {
 
     public void run() {
         System.out.println("Sim running");
-
-        this.simData.isRunning = true;
         this.initSim();
 
         while (true) {
@@ -70,7 +68,7 @@ public class Simulation {
             agents.add(hacker);
         }
     }
-    public void render() {
+    public void generate() {
         graph.graphGeneratorSimple(simData.numberOfSwitches, simData.numberOfComputers);
     }
 

@@ -25,12 +25,16 @@ public class SimInputHandler {
         ConfigDTO configDTO = takeRecentConfigDTO();
 
         switch (configDTO.command) {
-            case "setNumberOfComputers":
+            case "setNumberOfComputers": {
                 this.simManagerData.numberOfComputers = (Integer.parseInt(configDTO.value));
+                this.simulationManager.regenerate();
                 break;
-            case "setNumberOfSwitches":
+            }
+            case "setNumberOfSwitches": {
                 this.simManagerData.numberOfSwitches = (Integer.parseInt(configDTO.value));
+                this.simulationManager.regenerate();
                 break;
+            }
             case "setNumberOfITExperts":
                 this.simManagerData.numberOfITExperts = (Integer.parseInt(configDTO.value));
                 break;

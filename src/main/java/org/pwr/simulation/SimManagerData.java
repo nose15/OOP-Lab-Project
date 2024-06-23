@@ -14,7 +14,6 @@ public class SimManagerData {
     public float malwareSpreadPace;
 
     public int clockStep;
-    public boolean isRunning;
 
     public SimManagerData() {
         this.numberOfHackers = 5;
@@ -27,6 +26,5 @@ public class SimManagerData {
         this.numberOfComputers = 5;
         this.numberOfSwitches = 2;
         this.clockStep = 1000;
-        this.isRunning = false;
     }
 }

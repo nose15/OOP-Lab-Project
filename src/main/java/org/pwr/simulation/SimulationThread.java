@@ -22,21 +22,22 @@ public class SimulationThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Sim Thread running");
         while (true) {
-            try {
-                this.simPrerender();
-                System.out.println("Running");
-                if(managerToThreadQueue.remove().equals("start")) {
-                    System.out.println("Start");
-                    break;
+            if (!managerToThreadQueue.isEmpty()) {
+                try {
+                    String command = managerToThreadQueue.remove();
+                    if (command.equals("start")) {
+                        break;
+                    } else if (command.equals("regenerate")) {
+                        this.simReGenerate();
+                    }
+                } catch (NoSuchElementException e) {
+                    System.out.println(e.getMessage());
                 }
-            } catch (NoSuchElementException e) {
-                System.out.println(e.getMessage());
             }
 
             try {
-                Thread.sleep(config.clockStep);
+                Thread.sleep(config.clockStep / 10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -44,8 +45,8 @@ public class SimulationThread extends Thread {
         this.simulation.run();
     }
 
-    private void simPrerender() {
-        this.simulation.render();
+    private void simReGenerate() {
+        this.simulation.generate();
     }
 
     public void pause() {

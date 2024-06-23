@@ -130,8 +130,8 @@ public class View {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap().getMap();
 
-            if (!simState.isRunning) {
-                displayGraph.clear();
+            if (simState.rerender) {
+                this.displayGraph.clear();
             }
 
             displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
@@ -192,14 +192,15 @@ public class View {
         });
 
         ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(2);
-        scheduler.scheduleAtFixedRate(() -> {
-            try {
-                SimStateDTO simState = this.simToGuiQueue.take();
-                UpdateSimDisplay(simState);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        scheduler.scheduleAtFixedRate(this::singleUpdate, 0,  1, TimeUnit.SECONDS);
+    }
 
-        }, 0,  1, TimeUnit.SECONDS);
+    private void singleUpdate() {
+        try {
+            SimStateDTO simState = this.simToGuiQueue.take();
+            UpdateSimDisplay(simState);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
