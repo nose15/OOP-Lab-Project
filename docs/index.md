@@ -12,4 +12,3 @@ kompetencji obu stron, czas potrzebny do zainfekowania/naprawienia danego urząd
 ### Spis treści ###
 1. [Architektura](./implementation-details.md)
 2. [Instrukcja używania GUI](./gui-overview.md)
-3. [Pomysły na przyszłość](./future.md)
