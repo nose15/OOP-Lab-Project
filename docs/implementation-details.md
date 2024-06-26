@@ -27,3 +27,15 @@ Odpowiedzialny za interpretację inputu użytkownika podanego w postaci DTO. Wyw
 Odpowiedzialny za runtime symulacji. Dziedziczy po wbudowanej klasie Thread, co umożliwia uruchomienie go z poziomu SimulationManagera jako osobny wątek i kontrolowanie go poprzez kolejkę wstrzykniętą do niego poprzez dependency injection. 
 
 ## 2. Architektura Symulacji ##
+![Diagram Symulacji](./simulation-diagram.png)
+
+#### Simulation ####
+Klasa, która zawiera logikę odpowiedzialną za wykonywanie kolejnych kroków symulacji. Każdy krok jest wykonywany co ustalony odstęp czasu, dzięki czemu symulacja działa z tą samą prędkością na wszystkich komputerach.
+Zawiera ona obiekt klasy graf, jako mapę, na której odbywa się symulacja. Zawiera również agentów, u których w każdym kroku wywołuje metodę act(), która wykonuje ich zachowanie.
+
+#### Agent ####
+Bazowa, wirtualna klasa agenta. Udostępnia podstawowe metody pozwalające na poruszanie się po mapie oraz wykonywanie akcji na węzłach w sieci (Nodes)
+Dzieci klasy agent (Hacker i ITSpec) zawierają logikę odpowiedzialną za podejmowanie decyzji o wykonywaniu akcji zdefiniowanych w klasie Agent.
+
+#### Node ####
+Pasywny element symulacji. Jest to element grafu. W obecnej wersji nie wykonuje żadnych akcji. Zawiera swój stan i jest elementem, na którym hakerzy i informatycy mogą wykonywać hakowanie lub naprawę.
