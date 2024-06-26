@@ -209,7 +209,11 @@ public class Graph {
                 if(random.nextFloat((1.f-0.01f)+1.f)+0.01f <= switchConnectivity)
                 {
                     int chooseSwitch = random.nextInt((Switch.getCounter()-1)+1)+1;
-                    if(findVertex(take) != findVertex(chooseSwitch) && !((Switch) findVertex(take)).getSwitches().contains(findVertex(chooseSwitch)))
+
+                    //Also fix after add interface
+                    if(findVertex(take) instanceof Switch &&
+                            findVertex(take) != findVertex(chooseSwitch) &&
+                            !((Switch) findVertex(take)).getSwitches().contains(findVertex(chooseSwitch)))
                     {
                         addEdge(findVertex(take), findVertex(chooseSwitch), true);
                         ((Switch) findVertex(chooseSwitch)).addSwitch(findVertex(take));
@@ -218,7 +222,8 @@ public class Graph {
                 }
             }
 
-            if(((Switch) findVertex(take)).getSwitches().isEmpty())
+            //Add interface later
+            if(findVertex(take) instanceof Switch && ((Switch) findVertex(take)).getSwitches().isEmpty())
                 endSwitches.add((Switch) findVertex(take));
         }
 
