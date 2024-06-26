@@ -11,6 +11,7 @@ import org.pwr.app.eventhandling.SliderChangeListener;
 import org.pwr.app.eventhandling.SpinnerChangeListener;
 import org.pwr.dtos.ConfigDTO;
 import org.pwr.dtos.SimStateDTO;
+import org.pwr.simulation.Simulation;
 import org.pwr.simulation.graph.Node;
 
 import javax.swing.*;
@@ -36,6 +37,7 @@ public class View {
     private InputManager inputManager;
     private Graph displayGraph;
     private Map<Node, List<Node>> map;
+    private boolean isGraphRendered;
 
     public View(BlockingQueue<SimStateDTO> simToGuiQueue, BlockingQueue<ConfigDTO> guiToSimQueue) {
         this.inputManager = new InputManager(guiToSimQueue);
@@ -53,10 +55,10 @@ public class View {
 
         // TODO: Make it a separate function so the App can just add new config options
         // Now it's hardcoded but giving the control to the App module would be more appropriate
-        confPanel.add(createSpinnerInputPanel("Liczba hakerów", 0, 100, spinnerChangeListener, "setNumberOfHackers"));
-        confPanel.add(createSpinnerInputPanel("Liczba Informatyków", 0, 100, spinnerChangeListener, "setNumberOfITExperts"));
-        confPanel.add(createSpinnerInputPanel("Liczba switchy", 0, 100, spinnerChangeListener, "setNumberOfSwitches"));
-        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 0, 200, spinnerChangeListener, "setNumberOfComputers"));
+        confPanel.add(createSpinnerInputPanel("Liczba hakerów", 1, 100, spinnerChangeListener, "setNumberOfHackers"));
+        confPanel.add(createSpinnerInputPanel("Liczba Informatyków", 1, 100, spinnerChangeListener, "setNumberOfITExperts"));
+        confPanel.add(createSpinnerInputPanel("Liczba switchy", 2, 100, spinnerChangeListener, "setNumberOfSwitches"));
+        confPanel.add(createSpinnerInputPanel("Liczba pracowników", 2, 200, spinnerChangeListener, "setNumberOfComputers"));
         confPanel.add(createSliderInputPanel("Kompetencje Informatyków", 0, 100, sliderChangeListener, "setAvgItSkills"));
         confPanel.add(createSliderInputPanel("Kompetencje Hakerów", 0, 100, sliderChangeListener, "setAvgHackerSkills"));
         confPanel.add(createSpinnerInputPanel("Tempo utraty odporności", 0, 100, spinnerChangeListener, "setResistanceLossPace"));
@@ -128,17 +130,22 @@ public class View {
     private void UpdateSimDisplay(SimStateDTO simState) {
         SwingUtilities.invokeLater(() -> {
             this.map = simState.simGraphDTO.getSimMap().getMap();
+
+            if (simState.rerender) {
+                this.displayGraph.clear();
+            }
+
             displayGraph.setAttribute("ui.stylesheet", "node { text-size: 15px; text-alignment: under;}");
-          
+            
             for (Node key : map.keySet()) {
                 if (this.displayGraph.getNode(String.valueOf(key)) == null) {
                     this.displayGraph.addNode(String.valueOf(key));
                 }
                 for (Node a : map.get(key)) {
                     if (this.displayGraph.getNode(String.valueOf(a)) == null) this.displayGraph.addNode(String.valueOf(a));
-                    if (this.displayGraph.getEdge(Integer.toString(a.getId()) + "0" + Integer.toString(key.getId())) == null &&
-                            this.displayGraph.getEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId())) == null)
-                        this.displayGraph.addEdge(Integer.toString(key.getId()) + "0" + Integer.toString(a.getId()), String.valueOf(key), String.valueOf(a));
+                    if (this.displayGraph.getEdge(a.getId() + "0" + key.getId()) == null &&
+                            this.displayGraph.getEdge(key.getId() + "0" + a.getId()) == null)
+                        this.displayGraph.addEdge(key.getId() + "0" + a.getId(), String.valueOf(key), String.valueOf(a));
 
 
                     //Add each style class to array then add all calsses to node at once
@@ -186,14 +193,15 @@ public class View {
         });
 
         ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(2);
-        scheduler.scheduleAtFixedRate(() -> {
-            try {
-                SimStateDTO simState = this.simToGuiQueue.take();
-                UpdateSimDisplay(simState);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        scheduler.scheduleAtFixedRate(this::singleUpdate, 0,  1, TimeUnit.SECONDS);
+    }
 
-        }, 0,  1, TimeUnit.SECONDS);
+    private void singleUpdate() {
+        try {
+            SimStateDTO simState = this.simToGuiQueue.take();
+            UpdateSimDisplay(simState);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

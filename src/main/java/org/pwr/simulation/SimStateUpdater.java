@@ -19,12 +19,23 @@ public class SimStateUpdater {
         this.scheduler = new ScheduledThreadPoolExecutor(1);
     }
 
-    public void run() {
-        scheduler.scheduleAtFixedRate(this::sendState, 0, 1, TimeUnit.MILLISECONDS);
+    public void sendRenderUpdate() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
+        sendState(true);
     }
 
-    private void sendState() {
-        SimStateDTO simState = packState();
+    public void runSimulationUpdates() {
+        scheduler.scheduleAtFixedRate(() -> {
+            sendState(false);
+        }, 100, 1, TimeUnit.MILLISECONDS);
+    }
+
+    private void sendState(boolean rerender) {
+        SimStateDTO simState = packState(rerender);
         try {
             this.simStateDTOs.put(simState);
         } catch (InterruptedException e) {
@@ -32,7 +43,7 @@ public class SimStateUpdater {
         }
     }
 
-    private SimStateDTO packState() {
-        return new SimStateDTO(this.simGraphDTO);
+    private SimStateDTO packState(boolean rerender) {
+        return new SimStateDTO(this.simGraphDTO, rerender);
     }
 }
